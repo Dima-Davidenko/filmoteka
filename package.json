@@ -1,0 +1,38 @@
+{
+  "name": "goit-js-team-project",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/index.html",
+  "targets": {
+    "default": {
+      "distDir": "./output",
+      "publicUrl": "/goit-js-team-project/"
+    }
+  },
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dima-Davidenko/goit-js-team-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dima-Davidenko/goit-js-team-project/issues"
+  },
+  "homepage": "https://github.com/Dima-Davidenko/goit-js-team-project#readme",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.0",
+    "parcel": "^2.8.0",
+    "parcel-reporter-clean-dist": "^1.0.4",
+    "parcel-transformer-hbs": "^1.0.4",
+    "posthtml-include": "^1.7.4"
+  },
+  "dependencies": {
+    "modern-normalize": "^1.1.0"
+  },
+  "browserslist": "> 0.5%, last 2 versions, not dead"
+}
