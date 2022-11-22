@@ -1,6 +1,7 @@
 {
   "name": "goit-js-team-project",
   "version": "1.0.0",
+  "homepage": "https://github.com/Dima-Davidenko/goit-js-team-project",
   "description": "",
   "source": "src/index.html",
   "targets": {
@@ -23,7 +24,6 @@
   "bugs": {
     "url": "https://github.com/Dima-Davidenko/goit-js-team-project/issues"
   },
-  "homepage": "https://github.com/Dima-Davidenko/goit-js-team-project#readme",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.0",
     "parcel": "^2.8.0",
