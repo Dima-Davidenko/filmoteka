@@ -1,1 +1,2 @@
-console.log('Vanilla JS is the best!!!');
+import FirebaseMdl from './modules/firebaseMdl.js';
+console.log(FirebaseMdl.analytics);
