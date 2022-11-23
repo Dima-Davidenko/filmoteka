@@ -24,7 +24,6 @@
   "bugs": {
     "url": "https://github.com/Dima-Davidenko/goit-js-team-project/issues"
   },
-  "homepage": "https://dima-davidenko.github.io/goit-js-team-project/",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.0",
     "os-browserify": "^0.3.0",
