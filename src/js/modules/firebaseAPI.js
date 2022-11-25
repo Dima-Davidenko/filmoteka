@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { getDatabase, ref, set, onValue } from 'firebase/database';
+import { getDatabase, ref, set, remove, onValue } from 'firebase/database';
 import refsMdl from './refsMdl';
 
 export default class firebaseAPI {
@@ -56,10 +56,9 @@ export default class firebaseAPI {
         // userId = user.uid;
         // hideLoginError();
         // hideLinkError();
-        const starCountRef = ref(this.database, 'users/' + this.userId);
-        onValue(starCountRef, snapshot => {
-          const data = snapshot.val();
-          // console.log(JSON.parse(data));
+        const userLybrary = ref(this.database, `users/${this.userId}/lybrary/`);
+        onValue(userLybrary, lybrary => {
+          const data = lybrary.val();
           console.log(data);
         });
         this.userStatus.textContent = 'Registered';
@@ -80,13 +79,27 @@ export default class firebaseAPI {
     }
   }
 
-  async writeToDB(data) {
-    set(ref(this.database, `users/${this.userId}/watched/${data.filmId}`), {
-      filmId: data.filmId,
-      movieName: data.movieName,
-      posterUrl: data.posterUrl,
-      genres: data.genres,
-      year: data.year,
+  async addToWatched(movieInfo) {
+    set(ref(this.database, `users/${this.userId}/lybrary/watched/${movieInfo.filmId}`), {
+      filmId: movieInfo.filmId,
+      movieName: movieInfo.movieName,
+      posterUrl: movieInfo.posterUrl,
+      genres: movieInfo.genres,
+      year: movieInfo.year,
     });
+  }
+
+  async addToQueued(movieInfo) {
+    set(ref(this.database, `users/${this.userId}/lybrary/queued/${movieInfo.filmId}`), {
+      filmId: movieInfo.filmId,
+      movieName: movieInfo.movieName,
+      posterUrl: movieInfo.posterUrl,
+      genres: movieInfo.genres,
+      year: movieInfo.year,
+    });
+  }
+
+  async removeFromWatched(movieId) {
+    remove(ref(this.database, `users/${this.userId}/watched/${movieId}`));
   }
 }

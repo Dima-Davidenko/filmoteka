@@ -2,7 +2,6 @@ import refsMdl from './modules/refsMdl';
 import fetchAPI from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
 import { genresList } from './utils/genresList';
-import { state } from './modules/appState';
 import { uiAPI } from './modules/uiAPI';
 import { APP_STATES } from './utils/constsMdl';
 import { SEARCH_INPUT_NAME } from './utils/constsMdl';
@@ -11,7 +10,7 @@ import firebaseAPI from './modules/firebaseAPI';
 const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.logoutBtnEl);
 
 const changeAppState = type => {
-  state.type = type;
+  uiAPI.state.type = type;
 };
 
 const getOneMovieInfo = movieInfo => {
@@ -29,12 +28,12 @@ const prepareMoviesInfo = moviesArr => {
 
 const handleHomeBtnClick = async () => {
   changeAppState(APP_STATES.POPULAR);
+  uiAPI.state.popular.currentPage = 1;
   try {
-    const response = await fetchAPI.fetchPopular(state.popular.currentPage);
-    state.popular.totalPages = response.total_pages;
+    const response = await fetchAPI.fetchPopular(uiAPI.state.popular.currentPage);
+    uiAPI.state.popular.totalPages = response.total_pages;
     console.log(response);
     const processedInfo = prepareMoviesInfo(response.results);
-    console.log(processedInfo);
     uiAPI.renderList(processedInfo);
     uiAPI.renderHeader();
   } catch (error) {
@@ -48,11 +47,13 @@ const handleFormSubmit = async event => {
   const inputValue = event.target.elements[SEARCH_INPUT_NAME].value.trim();
   if (inputValue === '') return;
   changeAppState(APP_STATES.SEARCHED);
+  uiAPI.state.searched.currentPage = 1;
   try {
-    const response = await fetchAPI.fetchSearch(inputValue, state.searched.currentPage);
+    const response = await fetchAPI.fetchSearch(inputValue, uiAPI.state.searched.currentPage);
     console.log(response);
     const processedInfo = prepareMoviesInfo(response.results);
-    await firebaseInstance.writeToDB(processedInfo[0]);
+    // await firebaseInstance.writeToDB(processedInfo[0]);
+    await firebaseInstance.removeFromWatched(processedInfo[0].filmId);
     console.log(processedInfo);
 
     uiAPI.renderList(processedInfo);
