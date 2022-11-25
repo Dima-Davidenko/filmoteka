@@ -55,7 +55,7 @@ function element(totalPages, page) {
         pageLength = pageLength + 1;
     }
     if (page == pageLength) {
-      activeLi = "active";
+      activeLi = "activePage";
     } else {
       activeLi = "";
     }
@@ -82,7 +82,7 @@ function element(totalPages, page) {
   return pagList.innerHTML = pagLi;
 }
 element(totalPages, 5)
-console.log(element(totalPages, 5))
+// console.log(element(totalPages, 5))
 // btnPag.addEventListener('click', () =>{
   
 // });
