@@ -1,3 +1,6 @@
+import galleryElement from '../../templates/galleryElement.hbs';
+const galleryContainer = document.querySelector('.js-gallery');
+
 export const uiAPI = {
   state: {
     type: 'popular',
@@ -12,6 +15,9 @@ export const uiAPI = {
   },
   renderList: moviesListInfo => {
     console.log(moviesListInfo);
+
+    // console.log(galleryElement);
+    galleryContainer.innerHTML = galleryElement(moviesListInfo);
   },
   renderHeader: () => {},
   renderMainHeader: () => {},
