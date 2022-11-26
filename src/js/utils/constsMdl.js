@@ -6,3 +6,5 @@ export const APP_STATES = {
   QUEUED: 'quedued',
 };
 export const SEARCH_INPUT_NAME = 'searchInput';
+
+export const POPULAR_STORAGE_KEY = 'popular';

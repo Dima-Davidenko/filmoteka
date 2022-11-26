@@ -3,9 +3,20 @@ import fetchAPI from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
 import { genresList } from './utils/genresList';
 import { uiAPI } from './modules/uiAPI';
-import { APP_STATES } from './utils/constsMdl';
+import { APP_STATES, POPULAR_STORAGE_KEY } from './utils/constsMdl';
 import { SEARCH_INPUT_NAME } from './utils/constsMdl';
 import firebaseAPI from './modules/firebaseAPI';
+import storageAPI from './modules/storageAPI';
+
+const currentAppState = {
+  galleryState: 'popular',
+  headerState: 'main',
+  searchQuery: '',
+  popular: { currentPage: 1, totalPages: null },
+  search: { currentPage: 1, totalPages: null },
+  watched: { currentPage: 1, totalPages: null },
+  queued: { currentPage: 1, totalPages: null },
+};
 
 const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.logoutBtnEl);
 
@@ -26,16 +37,38 @@ const prepareMoviesInfo = moviesArr => {
   return moviesArr.map(getOneMovieInfo);
 };
 
-const handleHomeBtnClick = async () => {
-  changeAppState(APP_STATES.POPULAR);
-  uiAPI.state.popular.currentPage = 1;
+const showPopular = async () => {
   try {
-    const response = await fetchAPI.fetchPopular(uiAPI.state.popular.currentPage);
-    uiAPI.state.popular.totalPages = response.total_pages;
+    const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
+    currentAppState.popular.totalPages = response.total_pages;
     console.log(response);
     const processedInfo = prepareMoviesInfo(response.results);
-    uiAPI.renderList(processedInfo);
-    uiAPI.renderHeader();
+    uiAPI.renderGallery(processedInfo);
+  } catch (error) {
+    console.log(error.message);
+    // Notify.failure(error.message);
+  }
+};
+
+const handleHomeBtnClick = async e => {
+  // uiAPI.setActiveBtn(e.target);
+  if (currentAppState.headerState !== 'main') uiAPI.renderMainHeader();
+  currentAppState.popular.currentPage = 1;
+  currentAppState.galleryState = 'popular';
+  showPopular();
+};
+
+const showSearch = async () => {
+  try {
+    const response = await fetchAPI.fetchSearch(
+      currentAppState.searchQuery,
+      currentAppState.search.currentPage
+    );
+    console.log(response);
+    const processedInfo = prepareMoviesInfo(response.results);
+    console.log(processedInfo);
+    // firebaseInstance.addToWatched(processedInfo[0]);
+    uiAPI.renderGallery(processedInfo);
   } catch (error) {
     console.log(error.message);
     // Notify.failure(error.message);
@@ -44,27 +77,30 @@ const handleHomeBtnClick = async () => {
 
 const handleFormSubmit = async event => {
   event.preventDefault();
-  const inputValue = event.target.elements[SEARCH_INPUT_NAME].value.trim();
-  if (inputValue === '') return;
-  changeAppState(APP_STATES.SEARCHED);
-  uiAPI.state.searched.currentPage = 1;
-  try {
-    const response = await fetchAPI.fetchSearch(inputValue, uiAPI.state.searched.currentPage);
-    console.log(response);
-    const processedInfo = prepareMoviesInfo(response.results);
-    // await firebaseInstance.writeToDB(processedInfo[0]);
-    await firebaseInstance.removeFromWatched(processedInfo[0].filmId);
-    console.log(processedInfo);
-
-    uiAPI.renderList(processedInfo);
-    uiAPI.renderHeader();
-  } catch (error) {
-    console.log(error.message);
-    // Notify.failure(error.message);
-  }
+  currentAppState.searchQuery = event.target.elements[SEARCH_INPUT_NAME].value.trim();
+  if (!currentAppState.searchQuery) return;
+  currentAppState.search.currentPage = 1;
+  currentAppState.galleryState = 'search';
+  showSearch();
 };
 
-const handleLybraryBtnClick = async () => {};
+const showWatched = async () => {
+  const storageWatchedList = storageAPI.load('lybrary');
+  const preparedWatchedList = Object.values(storageWatchedList.watched);
+  uiAPI.renderGallery(preparedWatchedList);
+};
+
+const handleLybraryBtnClick = async e => {
+  uiAPI.setActiveBtn(e.target);
+  if (currentAppState.headerState !== 'lyb') {
+    uiAPI.renderLybHeader();
+  } else {
+    return;
+  }
+  currentAppState.watched.currentPage = 1;
+  currentAppState.galleryState = 'watched';
+  showWatched();
+};
 
 const handleWatchedBtnClick = () => {};
 const handleAddToWatchedBtnClick = async () => {};

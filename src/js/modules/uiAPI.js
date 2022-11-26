@@ -14,4 +14,5 @@ export const uiAPI = {
     console.log(moviesListInfo);
   },
   renderHeader: () => {},
+  renderMainHeader: () => {},
 };

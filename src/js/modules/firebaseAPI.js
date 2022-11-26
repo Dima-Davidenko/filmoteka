@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import { getDatabase, ref, set, remove, onValue } from 'firebase/database';
 import refsMdl from './refsMdl';
+import storageAPI from './storageAPI';
 
 export default class firebaseAPI {
   constructor(signInBtnEl, logOutBtnEl) {
@@ -45,6 +46,10 @@ export default class firebaseAPI {
     }
   }
 
+  async writeDataToStorage(lybrary) {
+    storageAPI.save('lybrary', lybrary);
+  }
+
   // Monitor auth state
   async monitorAuthState() {
     onAuthStateChanged(this.firebaseAuth, user => {
@@ -59,6 +64,7 @@ export default class firebaseAPI {
         const userLybrary = ref(this.database, `users/${this.userId}/lybrary/`);
         onValue(userLybrary, lybrary => {
           const data = lybrary.val();
+          this.writeDataToStorage(data);
           console.log(data);
         });
         this.userStatus.textContent = 'Registered';
@@ -78,6 +84,8 @@ export default class firebaseAPI {
       console.log(error);
     }
   }
+
+  async getWatched() {}
 
   async addToWatched(movieInfo) {
     set(ref(this.database, `users/${this.userId}/lybrary/watched/${movieInfo.filmId}`), {
