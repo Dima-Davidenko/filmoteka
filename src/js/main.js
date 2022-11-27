@@ -159,6 +159,7 @@ const handleFormSubmit = async event => {
 };
 
 const handleLybraryBtnClick = async e => {
+  if (!firebaseInstance.userId) uiAPI.showLoadingInfo();
   setActiveButton(e.target);
   currentAppState.galleryState = 'watched';
   refsMdl.watchedBtnEl.classList.add('active');

@@ -58,7 +58,7 @@ async function showModalMovieCard(movieInfo) {
 
 function lybBtnClick(e) {
   toggleButtonsType(e.target);
-  showLybrary(e.target.dataset.type);
+  // showLybrary(e.target.dataset.type);
 }
 
 function toggleButtonsType(btn) {
@@ -77,4 +77,5 @@ function showLybrary(type) {
 
 export default {
   showModalMovieCard,
+  showLybrary,
 };

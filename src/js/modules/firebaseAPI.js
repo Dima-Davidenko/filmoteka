@@ -14,6 +14,8 @@ import {
 import { getDatabase, ref, set, get, child, remove, onValue } from 'firebase/database';
 import refsMdl from './refsMdl';
 import storageAPI from './storageAPI';
+import modalMovieCardAPI from './modalMovieCardAPI';
+import { uiAPI } from './uiAPI';
 
 export default class firebaseAPI {
   constructor(signInBtnEl, logOutBtnEl) {
@@ -128,15 +130,19 @@ export default class firebaseAPI {
         // hideLinkError();
         const userLybraryWatched = ref(this.database, `users/${this.userId}/lybrary/watched/`);
         onValue(userLybraryWatched, watched => {
+          uiAPI.hideLoadingInfo();
           const data = watched.val();
           this.writeDataToStorage('watched', data);
           console.log('Data Monitor ---> Data from watched DB have changed', data);
+          modalMovieCardAPI.showLybrary('watched');
         });
         const userLybraryQueue = ref(this.database, `users/${this.userId}/lybrary/queue/`);
         onValue(userLybraryQueue, queue => {
+          uiAPI.hideLoadingInfo();
           const data = queue.val();
           this.writeDataToStorage('queue', data);
           console.log('Data Monitor ---> Data from queue DB have changed', data);
+          modalMovieCardAPI.showLybrary('queue');
         });
       } else {
         refsMdl.signOutBtnEl.classList.add('is-hidden');
