@@ -19,7 +19,7 @@ export default class firebaseAPI {
   constructor(signInBtnEl, logOutBtnEl) {
     this.firebaseConfig = JSON.parse(FIREBASE_CONFIG);
     this.firebaseApp = initializeApp(this.firebaseConfig);
-    this.firebaseAuth = getAuth(firebaseApp);
+    this.firebaseAuth = getAuth(this.firebaseApp);
     this.providerGoogle = new GoogleAuthProvider();
     this.database = getDatabase(this.firebaseApp);
     this.userStatus = refsMdl.userStatusEl;
