@@ -20,6 +20,8 @@ export const currentAppState = {
   watched: { currentPage: 1, totalPages: null },
   queued: { currentPage: 1, totalPages: null },
 };
+
+const noImageUrl = new URL('../images/elementBackup/imageNotAvailable.jpg', import.meta.url);
 // let galleryState = 'popular';
 
 const getOneMovieInfo = movieInfo => {
@@ -32,7 +34,8 @@ const getOneMovieInfo = movieInfo => {
     ? movieInfo.genre_ids.map(genreId => genresList[genreId])
     : [];
   const year = movieInfo?.release_date.slice(0, 4);
-  return { movieName, posterUrl, genres, year, id };
+  const noImage = noImageUrl.pathname;
+  return { movieName, posterUrl, genres, year, id, noImage };
 };
 
 const prepareMoviesInfo = moviesArr => {
@@ -48,6 +51,8 @@ const prepareModalCardInfo = movieInfo => {
   const original_title = movieInfo?.original_title || 'No Title';
   const overview = movieInfo?.overview || 'No overview';
   const year = movieInfo?.release_date.slice(0, 4) || 'No date';
+  const noImage = noImageUrl.pathname;
+  console.log('No Image url', noImage);
   let posterUrl = '';
   if (movieInfo?.poster_path) {
     posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
@@ -63,6 +68,7 @@ const prepareModalCardInfo = movieInfo => {
     overview,
     year,
     posterUrl,
+    noImage,
   };
 };
 
@@ -91,6 +97,7 @@ const showPopular = async () => {
       showPopular();
     });
   } catch (error) {
+    console.log('1');
     Notify.failure(error.message);
   }
 };
@@ -144,6 +151,7 @@ const showSearch = async () => {
       showSearch();
     });
   } catch (error) {
+    console.log('2');
     Notify.failure(error.message);
   }
 };
@@ -201,6 +209,7 @@ const handleGalleryClick = async e => {
     storageAPI.save('modalInfo', processedInfo);
     modalMovieCardAPI.showModalMovieCard(processedInfo);
   } catch (error) {
+    console.log('3');
     Notify.failure(error.message);
   }
 };

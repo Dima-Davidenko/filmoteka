@@ -10,7 +10,7 @@ export const uiAPI = {
   renderGallery: moviesListInfo => {
     console.log('Info for gallery rendering', moviesListInfo);
 
-    galleryContainer.innerHTML = galleryElementTpl(moviesListInfo);
+    galleryContainer.innerHTML = galleryElement(moviesListInfo);
     storageAPI.save('gallery', moviesListInfo);
   },
   showLoadingInfo: () => {
