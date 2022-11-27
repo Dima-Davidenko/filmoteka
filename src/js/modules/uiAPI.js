@@ -1,4 +1,5 @@
-import galleryElement from '../../templates/galleryElement.hbs';
+import galleryElementTpl from '../../templates/galleryElement.hbs';
+import storageAPI from './storageAPI';
 const galleryContainer = document.querySelector('.js-gallery');
 
 export const uiAPI = {
@@ -13,11 +14,12 @@ export const uiAPI = {
       totalPages: null,
     },
   },
-  renderList: moviesListInfo => {
+  renderGallery: moviesListInfo => {
     console.log(moviesListInfo);
 
     // console.log(galleryElement);
-    galleryContainer.innerHTML = galleryElement(moviesListInfo);
+    galleryContainer.innerHTML = galleryElementTpl(moviesListInfo);
+    storageAPI.save('gallery', moviesListInfo);
   },
   renderHeader: () => {},
   renderMainHeader: () => {},

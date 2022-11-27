@@ -1,16 +1,13 @@
-
-    {{#each this}}
-<li class='gallery__item'>
-  <a href='#'>
-    <img class='item__image' src={{posterUrl}} alt='film poster' />
-  </a>
-  <h2 class='item__title'>{{movieName}}</h2>
-  <span class='item__category'>
-    {{#each genres}}
-      {{this}}
-    {{/each}}
-    |
-    {{year}}
-  </span>
-</li>
-    {{/each}}
+{{#each this}}
+  <li class='gallery__item' data-id='{{id}}'>
+    <img class='item__image' src='{{posterUrl}}' alt='film poster' />
+    <h2 class='item__title'>{{movieName}}</h2>
+    <span class='item__category'>
+      {{#each genres}}
+        {{this}}
+      {{/each}}
+      |
+      {{year}}
+    </span>
+  </li>
+{{/each}}

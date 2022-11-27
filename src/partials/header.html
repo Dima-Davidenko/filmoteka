@@ -1,39 +1,44 @@
-<header class="header header--search">
-    <div class="container header__container">
-      <div class="header__nav">
-        <button class="js-logo header__btn">
-          <div class="header__logo"></div>
-          <span class="header__text-logo">Filmoteka </span>
-        </button>
-        <div class="wrapper">
-          <button class="js-home-btn header__btn header__home-btn current">Home</button>
-          <button class="js-lyb-btn header__btn header__lyb-btn ">
-            My library
-          </button>
-          <button class="js-signIn-btn header__btn header__home-btn sign-btn">            
-            <svg width="16" height="16">
+<header class="header header--search js-header">
+  <div class="container header__container">
+    <div class="header__nav">
+      <button class="js-logo header__btn">
+        <div class="header__logo"></div>
+        <span class="header__text-logo">Filmoteka </span>
+      </button>
+      <div class="wrapper">
+        <button class="js-home-btn header__btn header__home-btn current">Home</button>
+        <button class="js-lyb-btn header__btn header__lyb-btn">My library</button>
+        <button class="js-signIn-btn header__btn header__home-btn sign-btn is-hidden">
+          <svg width="16" height="16">
             <use href="./images/icons.svg#icon-sign-in"></use>
-          </svg> 
-          &nbsp Sign In</button>
-          <button class="js-logout-btn header__btn header__lyb-btn sign-btn is-hidden">
-            Sign Out &nbsp
-            <svg width="16" height="16">
-              <use href="./images/icons.svg#icon-sign-out"></use>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <form class="js-search-form header_form">
-        <label class="header__input-label"
-          >
-          <input placeholder="Movie search" class="header__input" type="text" name="searchQuery"
-        /></label>
-        <button class="header__btn header__search-btn"></button>
-        <span class="header__error">Search result not successful. Enter the correct movie name and </span>
-      </form>
-      <div class="wrap-lyb-nav is-hidden">
-        <button class="js-watched-btn header__lyb-nav-btn">Watched</button>
-        <button class="js-queue-btn header__lyb-nav-btn active">Queue</button>
+          </svg>
+          &nbsp Sign In
+        </button>
+        <button class="js-signOut-btn header__btn header__lyb-btn sign-btn is-hidden">
+          Sign Out &nbsp
+          <svg width="16" height="16">
+            <use href="./images/icons.svg#icon-sign-out"></use>
+          </svg>
+        </button>
+        <p class="js-userStatus"></p>
       </div>
     </div>
-  </header>
+    <form class="js-search-form header_form">
+      <label class="header__input-label">
+        <input
+          placeholder="Movie search"
+          class="header__input js-search-input"
+          type="text"
+          name="searchQuery"
+      /></label>
+      <button class="header__btn header__search-btn"></button>
+      <span class="header__error"
+        >Search result not successful. Enter the correct movie name and
+      </span>
+    </form>
+    <div class="wrap-lyb-nav">
+      <button class="js-watched-btn header__lyb-nav-btn active is-hidden">Watched</button>
+      <button class="js-queued-btn header__lyb-nav-btn is-hidden">Queue</button>
+    </div>
+  </div>
+</header>

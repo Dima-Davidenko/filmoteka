@@ -1,60 +1,118 @@
+import { Notify } from 'notiflix';
+import Pagination from 'tui-pagination';
+import '~/node_modules/tui-pagination/dist/tui-pagination.min.css';
 import refsMdl from './modules/refsMdl';
 import fetchAPI from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
 import { genresList } from './utils/genresList';
 import { uiAPI } from './modules/uiAPI';
-import { APP_STATES, POPULAR_STORAGE_KEY } from './utils/constsMdl';
-import { SEARCH_INPUT_NAME } from './utils/constsMdl';
 import firebaseAPI from './modules/firebaseAPI';
 import storageAPI from './modules/storageAPI';
+import galleryElementTpl from '../templates/galleryElement.hbs';
+import modalMovieCardAPI from './modules/modalMovieCardAPI';
 
-const currentAppState = {
+export const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.signOutBtnEl);
+export const currentAppState = {
   galleryState: 'popular',
-  headerState: 'main',
   searchQuery: '',
   popular: { currentPage: 1, totalPages: null },
   search: { currentPage: 1, totalPages: null },
   watched: { currentPage: 1, totalPages: null },
   queued: { currentPage: 1, totalPages: null },
 };
-
-const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.logoutBtnEl);
-
-const changeAppState = type => {
-  uiAPI.state.type = type;
-};
+// let galleryState = 'popular';
 
 const getOneMovieInfo = movieInfo => {
-  const filmId = movieInfo.id;
-  const movieName = movieInfo.title;
-  const posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
-  const genres = movieInfo.genre_ids.map(genreId => genresList[genreId]);
-  const year = movieInfo.release_date.slice(0, 4);
-  return { movieName, posterUrl, genres, year, filmId };
+  const id = movieInfo?.id;
+  const movieName = movieInfo?.title;
+  const posterUrl = movieInfo?.poster_path
+    ? `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`
+    : null;
+  const genres = movieInfo?.genre_ids
+    ? movieInfo.genre_ids.map(genreId => genresList[genreId])
+    : [];
+  const year = movieInfo?.release_date.slice(0, 4);
+  return { movieName, posterUrl, genres, year, id };
 };
 
 const prepareMoviesInfo = moviesArr => {
   return moviesArr.map(getOneMovieInfo);
 };
+const prepareModalCardInfo = movieInfo => {
+  const id = movieInfo.id;
+  const title = movieInfo?.title || 'No Title';
+  const vote_average = movieInfo?.vote_average || 'No Votes';
+  const vote_count = movieInfo?.vote_count || 'No Votes';
+  const popularity = movieInfo?.popularity || 'No Rates';
+  const genres = movieInfo?.genres.map(genre => genre.name) || [];
+  const original_title = movieInfo?.original_title || 'No Title';
+  const overview = movieInfo?.overview || 'No overview';
+  const year = movieInfo?.release_date.slice(0, 4) || 'No date';
+  let posterUrl = '';
+  if (movieInfo?.poster_path) {
+    posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
+  }
+  return {
+    id,
+    title,
+    vote_average,
+    vote_count,
+    popularity,
+    genres,
+    original_title,
+    overview,
+    year,
+    posterUrl,
+  };
+};
 
 const showPopular = async () => {
+  currentAppState.galleryState = 'popular';
   try {
     const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
     currentAppState.popular.totalPages = response.total_pages;
     console.log(response);
     const processedInfo = prepareMoviesInfo(response.results);
     uiAPI.renderGallery(processedInfo);
+    const pagination = new Pagination(refsMdl.paginationEl, {
+      totalItems: response.total_results,
+      itemsPerPage: 20,
+      visiblePages: 10,
+      centerAlign: true,
+      page: currentAppState.popular.currentPage,
+    });
+    pagination.on('beforeMove', function (eventData) {
+      currentAppState.popular.currentPage = eventData.page;
+      console.log('scroll');
+      window.scroll({
+        top: 0,
+        behavior: 'smooth',
+      });
+      showPopular();
+    });
   } catch (error) {
-    console.log(error.message);
-    // Notify.failure(error.message);
+    Notify.failure(error.message);
   }
 };
 
+function setActiveButton(button) {
+  const activeBtn = document.querySelector('.current');
+  activeBtn.classList.remove('current');
+  button.classList.add('current');
+}
+
+function handleLogoBtnClick() {
+  const event = new Event('click');
+  refsMdl.homeBtnEl.dispatchEvent(event);
+}
+
 const handleHomeBtnClick = async e => {
-  // uiAPI.setActiveBtn(e.target);
-  if (currentAppState.headerState !== 'main') uiAPI.renderMainHeader();
+  setActiveButton(e.target);
+  refsMdl.searchInputEl.value = '';
+  refsMdl.searchFormEl.classList.remove('is-hidden');
+  refsMdl.watchedBtnEl.classList.add('is-hidden');
+  refsMdl.queuedBtnEl.classList.add('is-hidden');
   currentAppState.popular.currentPage = 1;
-  currentAppState.galleryState = 'popular';
   showPopular();
 };
 
@@ -69,52 +127,86 @@ const showSearch = async () => {
     console.log(processedInfo);
     // firebaseInstance.addToWatched(processedInfo[0]);
     uiAPI.renderGallery(processedInfo);
+    const pagination = new Pagination(refsMdl.paginationEl, {
+      totalItems: response.total_results,
+      itemsPerPage: 20,
+      visiblePages: 10,
+      centerAlign: true,
+      page: currentAppState.search.currentPage,
+    });
+    pagination.on('beforeMove', function (eventData) {
+      currentAppState.search.currentPage = eventData.page;
+      console.log('scroll');
+      window.scroll({
+        top: 0,
+        behavior: 'smooth',
+      });
+      showSearch();
+    });
   } catch (error) {
-    console.log(error.message);
-    // Notify.failure(error.message);
+    Notify.failure(error.message);
   }
 };
 
 const handleFormSubmit = async event => {
+  currentAppState.galleryState = 'search';
   event.preventDefault();
-  currentAppState.searchQuery = event.target.elements[SEARCH_INPUT_NAME].value.trim();
+  currentAppState.searchQuery = event.target.elements.searchQuery.value.trim();
   if (!currentAppState.searchQuery) return;
   currentAppState.search.currentPage = 1;
   currentAppState.galleryState = 'search';
   showSearch();
 };
 
-const showWatched = async () => {
-  const storageWatchedList = storageAPI.load('lybrary');
-  const preparedWatchedList = Object.values(storageWatchedList.watched);
-  uiAPI.renderGallery(preparedWatchedList);
-};
-
 const handleLybraryBtnClick = async e => {
-  uiAPI.setActiveBtn(e.target);
-  if (currentAppState.headerState !== 'lyb') {
-    uiAPI.renderLybHeader();
-  } else {
-    return;
-  }
-  currentAppState.watched.currentPage = 1;
+  setActiveButton(e.target);
   currentAppState.galleryState = 'watched';
-  showWatched();
+  refsMdl.watchedBtnEl.classList.add('active');
+  refsMdl.queuedBtnEl.classList.remove('active');
+  refsMdl.searchFormEl.classList.add('is-hidden');
+  refsMdl.watchedBtnEl.classList.remove('is-hidden');
+  refsMdl.queuedBtnEl.classList.remove('is-hidden');
+  const watched = storageAPI.load('watched') || [];
+  refsMdl.galleryEl.innerHTML = galleryElementTpl(watched);
 };
 
-const handleWatchedBtnClick = () => {};
-const handleAddToWatchedBtnClick = async () => {};
+const handleWatchedBtnClick = () => {
+  currentAppState.galleryState = 'watched';
+  refsMdl.watchedBtnEl.classList.add('active');
+  refsMdl.queuedBtnEl.classList.remove('active');
+  const watched = storageAPI.load('watched') || [];
+  refsMdl.galleryEl.innerHTML = galleryElementTpl(watched);
+};
 
-const handleQueuedBtnClick = () => {};
-const handleAddToQueuedBtnClick = async () => {};
+const handleQueuedBtnClick = () => {
+  currentAppState.galleryState = 'queued';
+  refsMdl.queuedBtnEl.classList.add('active');
+  refsMdl.watchedBtnEl.classList.remove('active');
+  const queued = storageAPI.load('queued') || [];
+  refsMdl.galleryEl.innerHTML = galleryElementTpl(queued);
+};
 
-const handlePaginationClick = () => {};
+const handlePaginationClick = e => {};
 
-const handleGalleryClick = async () => {};
+const handleGalleryClick = async e => {
+  const card = e.target.closest('.gallery__item');
+  if (!card) return;
+  const id = +card.dataset.id;
+  try {
+    const response = await fetchAPI.fetchId(id);
+    console.log(response);
+    const processedInfo = prepareModalCardInfo(response);
 
-const handleTeamDescrClick = () => {};
+    storageAPI.save('modalInfo', processedInfo);
+    modalMovieCardAPI.showModalMovieCard(processedInfo);
+  } catch (error) {
+    Notify.failure(error.message);
+  }
+};
 
-refsMdl.logoEl.addEventListener('click', handleHomeBtnClick);
+// const handleTeamDescrClick = () => {};
+
+refsMdl.logoEl.addEventListener('click', handleLogoBtnClick);
 refsMdl.homeBtnEl.addEventListener('click', handleHomeBtnClick);
 
 refsMdl.searchFormEl.addEventListener('submit', handleFormSubmit);
@@ -124,11 +216,10 @@ refsMdl.lybraryBtnEl.addEventListener('click', handleLybraryBtnClick);
 refsMdl.watchedBtnEl.addEventListener('click', handleWatchedBtnClick);
 refsMdl.queuedBtnEl.addEventListener('click', handleQueuedBtnClick);
 
-refsMdl.addToWatchedBtnEl.addEventListener('click', handleAddToWatchedBtnClick);
-refsMdl.addToQueuedBtnEl.addEventListener('click', handleAddToQueuedBtnClick);
-
-refsMdl.paginationEl.addEventListener('click', handlePaginationClick);
+// refsMdl.paginationEl.addEventListener('click', handlePaginationClick);
 
 refsMdl.galleryEl.addEventListener('click', handleGalleryClick);
 
-refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
+// refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
+
+showPopular();

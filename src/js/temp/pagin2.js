@@ -1,9 +1,21 @@
-const pagList = document.querySelector('#pagination');
-// const btnPag = document.querySelector('.formatting')
+import { create } from 'basiclightbox';
+import { currentAppState } from '../main';
+import refsMdl from './refsMdl';
 
-let totalPages = 30;
+const pagsElems = {
+  popular: refsMdl.pagPopularEl,
+};
 
-function element(totalPages, page) {
+function showPagination(type) {
+  if (pagsElems[type].innerHTML === '') {
+    createPagElem(pagsElems[type], type);
+  }
+  showPagElem(pagsElems[type], type);
+}
+
+function createPagElem(elem, type) {
+  const page = currentAppState[type].currentPage;
+  const totalPages = currentAppState[type].totalPages;
   let pagLi = '';
   let beforePages = page - 2;
   let afterPages = page + 2;
@@ -17,12 +29,14 @@ function element(totalPages, page) {
         </svg>
     </li>`;
   }
+
   if (page > 2) {
     pagLi += `<li class="numb position"><button class="formatting">1</button></li>`;
     if (page > 3) {
       pagLi += `<li class="numb position"><button class="formatting">...</button></li>`;
     }
   }
+
   if (page == totalPages) {
     beforePages = beforePages - 3;
   } else if (page == totalPages - 2) {
@@ -30,6 +44,7 @@ function element(totalPages, page) {
   } else if (page == totalPages - 1) {
     beforePages = beforePages - 2;
   }
+
   if (page == 1) {
     afterPages = afterPages + 3;
   } else if (page == 2) {
@@ -37,12 +52,6 @@ function element(totalPages, page) {
   } else if (page == 3) {
     afterPages = afterPages + 1;
   }
-
-  // if(page == 1){
-  //   afterPages = afterPages + 2;
-  // }else if(page == 2){
-  //   afterPages = afterPages + 1;
-  // }
 
   for (pageLength = beforePages; pageLength <= afterPages; pageLength++) {
     if (pageLength > totalPages) {
@@ -73,11 +82,10 @@ function element(totalPages, page) {
         </svg>
     </li>`;
   }
-  return (pagList.innerHTML = pagLi);
+  return (elem.innerHTML = pagLi);
 }
-element(1, 1);
+function showPagElem(elem) {}
 
-// console.log(element(totalPages, 5))
-// btnPag.addEventListener('click', () =>{
-
-// });
+export default {
+  showPagination,
+};
