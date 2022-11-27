@@ -1,4 +1,7 @@
-import galleryElementTpl from '../../templates/galleryElement.hbs';
+import galleryElement from '../../templates/galleryElement.hbs';
+import modal from '../../templates/modal.hbs';
+
+const genersEl = document.querySelectorAll('.item__category-js');
 import storageAPI from './storageAPI';
 import refsMdl from './refsMdl';
 const galleryContainer = document.querySelector('.js-gallery');
