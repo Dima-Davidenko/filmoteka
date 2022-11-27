@@ -9,6 +9,7 @@
     transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.56);
     z-index: 1;
+    overflow-y: scroll;
 // }
 // @media screen and (min-width: 1280px) {
 //     visibility: hidden;
@@ -23,7 +24,6 @@ img{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    margin: auto;
     z-index: 2;
     background-color: $main-white-clr;
     padding: 48px 20px;
