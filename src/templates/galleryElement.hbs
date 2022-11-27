@@ -1,13 +1,28 @@
-{{#each this}}
-  <li class='gallery__item' data-id='{{id}}'>
-    <img class='item__image' src='{{posterUrl}}' alt='film poster' />
-    <h2 class='item__title'>{{movieName}}</h2>
-    <span class='item__category'>
-      {{#each genres}}
-        {{this}}
-      {{/each}}
-      |
-      {{year}}
-    </span>
-  </li>
-{{/each}}
+    {{#each this}}
+<li class='gallery__item'>
+  <a href='#'>
+  {{#if posterUrl}}
+ <img class='item__image' src={{posterUrl}} alt='film poster' />
+{{else}}
+<img class='item__image' src="./images/elementBackup/imageNotAvailable.jpg" alt='#' />
+{{/if}}
+  </a>
+  <h2 class='item__title'>{{movieName}}</h2>
+  <span class='item__category-js item__category'>
+    {{#each genres}}
+      {{this}},
+    {{/each}}
+  </span>
+      <span class="item__category" >| {{year}}</span>
+</li>
+    {{/each}}
+
+
+    {{!-- <div class="entry">
+{{#if author}}
+<h1>{{firstName}} {{lastName}}</h1>
+{{else}}
+<h1>Unknown Author</h1>
+{{/if}}
+</div> --}}
+

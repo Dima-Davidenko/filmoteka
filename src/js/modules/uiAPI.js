@@ -1,4 +1,8 @@
-import galleryElementTpl from '../../templates/galleryElement.hbs';
+
+import galleryElement from '../../templates/galleryElement.hbs';
+import modal from '../../templates/modal.hbs';
+
+const genersEl = document.querySelectorAll('.item__category-js');
 import storageAPI from './storageAPI';
 const galleryContainer = document.querySelector('.js-gallery');
 
@@ -18,8 +22,24 @@ export const uiAPI = {
     console.log('Info for gallery rendering', moviesListInfo);
 
     // console.log(galleryElement);
-    galleryContainer.innerHTML = galleryElementTpl(moviesListInfo);
+
+    galleryContainer.innerHTML = galleryElement(moviesListInfo);
+    // galleryContainer.innerHTML = modal(moviesListInfo);
+
+      // genersEl.forEach(element => {
+      //   // console.log(element.textContent.length);
+      //   // element.textContent.split(" ").join(",")
+      //   if (element.textContent.endsWith(',')) {
+      //     // element.textContent.splice(element.textContent.length - 1, 1)
+      //     // const text = element.textContent;
+      //     // text.slice(0, text.length - 1);
+      //     // console.log(text.slice(0, 3));
+      //   }
+      // });
+
+   
     storageAPI.save('gallery', moviesListInfo);
+
   },
   renderHeader: () => {},
   renderMainHeader: () => {},
