@@ -9,8 +9,9 @@ import {
   sendSignInLinkToEmail,
   isSignInWithEmailLink,
   signInWithEmailLink,
+  signInWithRedirect,
 } from 'firebase/auth';
-import { getDatabase, ref, set, remove, onValue } from 'firebase/database';
+import { getDatabase, ref, set, get, child, remove, onValue } from 'firebase/database';
 import refsMdl from './refsMdl';
 import storageAPI from './storageAPI';
 
@@ -23,7 +24,7 @@ export default class firebaseAPI {
     this.database = getDatabase(this.firebaseApp);
     this.userStatus = refsMdl.userStatusEl;
     this.monitorAuthState();
-    signInBtnEl.addEventListener('click', this.signInWithPopupGoogle.bind(this));
+    signInBtnEl.addEventListener('click', this.signInWithRedirectFirebase.bind(this));
     logOutBtnEl.addEventListener('click', this.logout.bind(this));
   }
 
@@ -74,8 +75,12 @@ export default class firebaseAPI {
     }
   }
 
-  async writeDataToStorage(lybrary) {
-    storageAPI.save('lybrary', lybrary);
+  async signInWithRedirectFirebase() {
+    signInWithRedirect(this.firebaseAuth, this.providerGoogle);
+  }
+
+  async writeDataToStorage(key, data) {
+    storageAPI.save(key, data);
   }
 
   // Monitor auth state
@@ -114,18 +119,24 @@ export default class firebaseAPI {
         refsMdl.signOutBtnEl.classList.remove('is-hidden');
         refsMdl.signInBtnEl.classList.add('is-hidden');
         refsMdl.userStatusEl.textContent = `Hello, ${user.displayName}`;
-        console.log(user);
+        console.log('User info from monitor', user);
         this.userId = user.uid;
         // showApp();
         // showLoginState(user);
         // userId = user.uid;
         // hideLoginError();
         // hideLinkError();
-        const userLybrary = ref(this.database, `users/${this.userId}/lybrary/`);
-        onValue(userLybrary, lybrary => {
-          const data = lybrary.val();
-          this.writeDataToStorage(data);
-          console.log(data);
+        const userLybraryWatched = ref(this.database, `users/${this.userId}/lybrary/watched/`);
+        onValue(userLybraryWatched, watched => {
+          const data = watched.val();
+          this.writeDataToStorage('watched', data);
+          console.log('Data Monitor ---> Data from watched DB have changed', data);
+        });
+        const userLybraryQueue = ref(this.database, `users/${this.userId}/lybrary/queue/`);
+        onValue(userLybraryQueue, queue => {
+          const data = queue.val();
+          this.writeDataToStorage('queue', data);
+          console.log('Data Monitor ---> Data from queue DB have changed', data);
         });
       } else {
         refsMdl.signOutBtnEl.classList.add('is-hidden');
@@ -140,18 +151,53 @@ export default class firebaseAPI {
   async logout() {
     try {
       await signOut(this.firebaseAuth);
+      sessionStorage.clear();
+      window.location.reload();
       this.userStatus.textContent = 'Logged Out';
       this.userId = null;
     } catch (error) {
       console.log(error);
     }
   }
+  async isInLyb(id, type) {
+    const dbRef = ref(this.database);
+    const snapshot = await get(child(dbRef, `users/${this.userId}/lybrary/${type}/${id}`));
+    try {
+      if (snapshot.exists()) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  async getWatched() {}
+  async isInQueue(id) {
+    return ref((this.database, `users/${this.userId}/lybrary/queue/${id}`));
+  }
+
+  async addToLyb(id, type, movieInfo) {
+    console.log(`Movie is added to ${type}`, movieInfo);
+    set(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`), {
+      id: movieInfo.id,
+      movieName: movieInfo.title,
+      posterUrl: movieInfo.posterUrl,
+      genres: movieInfo.genres,
+      year: movieInfo.year,
+    });
+  }
+  async removeFromLyb(id, type) {
+    try {
+      remove(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`));
+    } catch (error) {
+      console.log(`Fail to remove from DB ---> ${error}`);
+    }
+  }
 
   async addToWatched(movieInfo) {
     set(ref(this.database, `users/${this.userId}/lybrary/watched/${movieInfo.filmId}`), {
-      filmId: movieInfo.filmId,
+      id: movieInfo.filmId,
       movieName: movieInfo.movieName,
       posterUrl: movieInfo.posterUrl,
       genres: movieInfo.genres,

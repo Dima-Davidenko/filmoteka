@@ -71,7 +71,7 @@ const showPopular = async () => {
   try {
     const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
     currentAppState.popular.totalPages = response.total_pages;
-    console.log(response);
+    console.log('Popular movies server response', response);
     const processedInfo = prepareMoviesInfo(response.results);
     uiAPI.renderGallery(processedInfo);
     const pagination = new Pagination(refsMdl.paginationEl, {
@@ -179,10 +179,10 @@ const handleWatchedBtnClick = () => {
 };
 
 const handleQueuedBtnClick = () => {
-  currentAppState.galleryState = 'queued';
+  currentAppState.galleryState = 'queue';
   refsMdl.queuedBtnEl.classList.add('active');
   refsMdl.watchedBtnEl.classList.remove('active');
-  const queued = storageAPI.load('queued') || [];
+  const queued = storageAPI.load('queue') || [];
   refsMdl.galleryEl.innerHTML = galleryElementTpl(queued);
 };
 
@@ -194,7 +194,7 @@ const handleGalleryClick = async e => {
   const id = +card.dataset.id;
   try {
     const response = await fetchAPI.fetchId(id);
-    console.log(response);
+    console.log('Full movie info', response);
     const processedInfo = prepareModalCardInfo(response);
 
     storageAPI.save('modalInfo', processedInfo);

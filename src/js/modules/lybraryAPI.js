@@ -3,9 +3,11 @@ import { firebaseInstance } from '../main';
 
 function lybBtnClickAction(e) {
   if (e.target.dataset.action === 'add') {
-    addToLyb(+e.target.dataset.id, e.target.dataset.type);
+    addToFirebase(+e.target.dataset.id, e.target.dataset.type);
+    // addToLyb(+e.target.dataset.id, e.target.dataset.type);
   } else {
-    removeFromLyb(+e.target.dataset.id, e.target.dataset.type);
+    // removeFromLyb(+e.target.dataset.id, e.target.dataset.type);
+    removeFromFirebase(+e.target.dataset.id, e.target.dataset.type);
   }
 }
 
@@ -15,6 +17,17 @@ function addToLyb(id, type) {
   const movieInfo = storageAPI.load('modalInfo');
   lyb.push(movieInfo);
   storageAPI.save(type, lyb);
+}
+async function addToFirebase(id, type) {
+  const isInLyb = await firebaseInstance.isInLyb(id, type);
+  console.log(`Is movie in DB? `, isInLyb);
+  if (isInLyb) return;
+  const movieInfo = storageAPI.load('modalInfo');
+  firebaseInstance.addToLyb(id, type, movieInfo);
+}
+
+async function removeFromFirebase(id, type) {
+  firebaseInstance.removeFromLyb(id, type);
 }
 
 function removeFromLyb(id, type) {

@@ -1,4 +1,5 @@
 import * as basicLightbox from 'basiclightbox';
+import { firebaseInstance } from '../main';
 
 import lybraryAPI from './lybraryAPI';
 import storageAPI from './storageAPI';
@@ -8,12 +9,10 @@ import { currentAppState } from '../main';
 import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import galleryElementTpl from '../../templates/galleryElement.hbs';
 
-function showModalMovieCard(movieInfo) {
-  const watched = storageAPI.load('watched') || [];
-  const isWatched = watched.find(info => info?.id === movieInfo.id);
+async function showModalMovieCard(movieInfo) {
+  const isWatched = await firebaseInstance.isInLyb(movieInfo.id, 'watched');
 
-  const queued = storageAPI.load('queued') || [];
-  const isQueued = queued.find(info => info?.id === movieInfo.id);
+  const isQueued = await firebaseInstance.isInLyb(movieInfo.id, 'queue');
 
   refsMdl.modalMovieCardEl.innerHTML = modalMovieCardTpl(movieInfo);
 
@@ -29,10 +28,10 @@ function showModalMovieCard(movieInfo) {
   }
 
   if (isQueued) {
-    queueBtn.textContent = 'Remove from queued';
+    queueBtn.textContent = 'Remove from queue';
     queueBtn.dataset.action = 'remove';
   } else {
-    queueBtn.textContent = 'Add to queued';
+    queueBtn.textContent = 'Add to queue';
     queueBtn.dataset.action = 'add';
   }
 
