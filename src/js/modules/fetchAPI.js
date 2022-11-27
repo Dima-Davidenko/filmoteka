@@ -12,6 +12,11 @@ const fetchPopular = async page => {
   const { data } = await axiosTMDB.get('trending/movie/week', { params: { page } });
   return data;
 };
+
+const fetchId = async movie_id => {
+  const { data } = await axiosTMDB.get(`movie/${movie_id}`);
+  return data;
+};
 const fetchSearch = async (query, page) => {
   const { data } = await axiosTMDB.get('search/movie', {
     params: { page, query, language: 'en-US', include_adult: false },
@@ -22,4 +27,5 @@ const fetchSearch = async (query, page) => {
 export default {
   fetchPopular,
   fetchSearch,
+  fetchId,
 };
