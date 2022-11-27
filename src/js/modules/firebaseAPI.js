@@ -1,5 +1,5 @@
 import { FIREBASE_CONFIG } from '../utils/envConsts';
-import { firebaseApp, initializeApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import {
   getAuth,
   onAuthStateChanged,
