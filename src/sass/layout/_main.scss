@@ -86,7 +86,7 @@
   display: flex;
   justify-content: center;
 }
-.formatting {
+.tui-pagination .tui-page-btn {
   width: 40px;
   height: 40px;
   font-size: 12px;
@@ -95,12 +95,29 @@
   background-color: $main-white-clr;
   border: 0;
   border-radius: 5px;
+  display: inline-block;
+  border: 1px solid $main-white-clr;
+  padding: 10px 0 6px;
+  &:hover {
+    background-color: $orange-clr;
+    color: $main-white-clr;
+  }
+}
+.tui-pagination {
+  margin-top: 0;
+  margin-bottom: 51px;
+}
+
+.tui-pagination .tui-is-selected,
+.tui-pagination strong {
+  background-color: $orange-clr;
+  border-color: transparent;
 }
 .activePage {
   background-color: $orange-clr;
   color: $orange-clr;
 }
-.position {
+.tui-page-btn {
   &:not(:last-of-type) {
     margin-right: 3px;
   }
