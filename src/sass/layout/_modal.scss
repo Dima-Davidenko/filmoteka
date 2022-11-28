@@ -2,28 +2,27 @@
   width: 100%;
 }
 .modal-window {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  margin-top: 90px;
+  margin-bottom: 38px;
+  // overflow-y: scroll;
+  // scroll-behavior: smooth;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
   z-index: 2;
   background-color: $main-white-clr;
   padding: 48px 20px;
-  /* width: 280px; */
-  /* height: 940px; */
   overflow: auto;
   background: $main-white-clr;
-}
-@media screen and (min-width: 768px) {
-  .modal-window {
+  @media screen and (min-width: 768px) {
+    margin-top: 0px;
     padding: 40px 72px 40px 36px;
     display: flex;
     width: 704px;
     height: 552px;
   }
-}
-@media screen and (min-width: 1280px) {
-  .modal-window {
+  @media screen and (min-width: 1280px) {
     padding: 40px 12px;
     width: 806px;
     height: 558px;
@@ -238,7 +237,11 @@ td {
 }
 .btn-modal {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 20px;
+  @media screen and (min-width: 768px) {
+    gap: 15px;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -261,6 +264,9 @@ td {
 }
 
 .btn-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   max-width: 110px;
   min-height: 44px;
   border: 1px solid $main-black-clr;
@@ -293,4 +299,7 @@ td {
 
 .info-span-original-title {
   text-transform: uppercase;
+}
+.basicLightbox {
+  overflow-y: scroll;
 }
