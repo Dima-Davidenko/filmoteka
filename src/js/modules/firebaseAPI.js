@@ -151,6 +151,8 @@ export default class firebaseAPI {
             const keys = Object.keys(data);
             const watchedStorage = keys.map(key => data[key]);
             this.writeDataToStorage('watched', watchedStorage);
+          } else {
+            this.writeDataToStorage('watched', []);
           }
           console.log('Data Monitor ---> Data from watched DB have changed', data);
           modalMovieCardAPI.showLybrary('watched');
@@ -163,6 +165,8 @@ export default class firebaseAPI {
             const keys = Object.keys(data);
             const queueStorage = keys.map(key => data[key]);
             this.writeDataToStorage('queue', queueStorage);
+          } else {
+            this.writeDataToStorage('queue', []);
           }
           console.log('Data Monitor ---> Data from queue DB have changed', data);
           modalMovieCardAPI.showLybrary('queue');

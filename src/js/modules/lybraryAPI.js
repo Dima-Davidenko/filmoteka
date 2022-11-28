@@ -1,5 +1,6 @@
 import storageAPI from './storageAPI';
 import { firebaseInstance } from '../main';
+import modalMovieCard from './modalMovieCardAPI';
 
 function lybBtnClickAction(e) {
   if (e.target.dataset.action === 'add') {
@@ -7,12 +8,14 @@ function lybBtnClickAction(e) {
       addToFirebase(+e.target.dataset.id, e.target.dataset.type);
     } else {
       addToLyb(+e.target.dataset.id, e.target.dataset.type);
+      modalMovieCard.showLybrary(e.target.dataset.type);
     }
   } else {
     if (firebaseInstance.userId) {
       removeFromFirebase(+e.target.dataset.id, e.target.dataset.type);
     } else {
       removeFromLyb(+e.target.dataset.id, e.target.dataset.type);
+      modalMovieCard.showLybrary(e.target.dataset.type);
     }
   }
 }
