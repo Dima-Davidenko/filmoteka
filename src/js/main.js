@@ -1,6 +1,5 @@
 import { Notify } from 'notiflix';
 import Pagination from 'tui-pagination';
-import '~/node_modules/tui-pagination/dist/tui-pagination.min.css';
 import refsMdl from './modules/refsMdl';
 import fetchAPI from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
@@ -73,12 +72,14 @@ const prepareModalCardInfo = movieInfo => {
 
 const showPopular = async () => {
   currentAppState.galleryState = 'popular';
+  currentAppState.popular.currentPage = Math.ceil(Math.random() * 50);
   try {
     const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
     currentAppState.popular.totalPages = response.total_pages;
     console.log('Popular movies server response', response);
     const processedInfo = prepareMoviesInfo(response.results);
     uiAPI.renderGallery(processedInfo);
+    refsMdl.paginationEl.classList.remove('is-hidden');
     const pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
@@ -129,10 +130,15 @@ const showSearch = async () => {
       currentAppState.search.currentPage
     );
     console.log(response);
+    if (!response.results.length) {
+      Notify.failure('Нет таких фильмов :)');
+      return;
+    }
     const processedInfo = prepareMoviesInfo(response.results);
     console.log(processedInfo);
     // firebaseInstance.addToWatched(processedInfo[0]);
     uiAPI.renderGallery(processedInfo);
+    refsMdl.paginationEl.classList.remove('is-hidden');
     const pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
@@ -166,6 +172,7 @@ const handleFormSubmit = async event => {
 };
 
 const handleLybraryBtnClick = async e => {
+  refsMdl.paginationEl.classList.add('is-hidden');
   if (!firebaseInstance.userId) uiAPI.showLoadingInfo();
   setActiveButton(e.target);
   currentAppState.galleryState = 'watched';

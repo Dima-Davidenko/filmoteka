@@ -1,3 +1,7 @@
+.basicLightbox {
+  padding-top: 50px;
+}
+
 .container-modal img {
   width: 100%;
 }
@@ -277,7 +281,7 @@ td {
   color: $main-black-clr;
   background-color: initial;
 
-  &:hover {
+  &[data-action='remove'] {
     border: 1px solid $main-black-clr;
     color: $main-white-clr;
     background-color: $orange-clr;
