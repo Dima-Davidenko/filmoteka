@@ -16,7 +16,7 @@
     <div class='table-div'></div>
     <div class='img-modal'>
       {{#if this.posterUrl}}
-        <img src={{this.posterUrl}} alt='film poster' />
+        <img src='{{this.posterUrl}}' alt='film poster' />
       {{else}}
         <img src='{{this.noImage}}' alt='#' />
       {{/if}}
@@ -49,9 +49,9 @@
           </th>
           <td>
             <span class='info-span-genre'>
-              {{#each this.genres}}
-                {{this}},
-              {{/each}}</span>
+              {{#if this.genres}}
+                {{this.genres}}
+              {{/if}}</span>
           </td>
         </tr>
       </table>
