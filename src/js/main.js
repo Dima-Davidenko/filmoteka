@@ -26,7 +26,7 @@ const noImageUrl = new URL('../images/elementBackup/imageNotAvailable.jpg', impo
 
 const getOneMovieInfo = movieInfo => {
   const id = movieInfo?.id;
-  const movieName = movieInfo?.title;
+  const title = movieInfo?.title;
   const posterUrl = movieInfo?.poster_path
     ? `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`
     : null;
@@ -35,7 +35,7 @@ const getOneMovieInfo = movieInfo => {
     : '';
   const year = movieInfo?.release_date.slice(0, 4);
   const noImage = noImageUrl.pathname;
-  return { movieName, posterUrl, genres, year, id, noImage };
+  return { title, posterUrl, genres, year, id, noImage };
 };
 
 const prepareMoviesInfo = moviesArr => {
@@ -52,7 +52,6 @@ const prepareModalCardInfo = movieInfo => {
   const overview = movieInfo?.overview || 'No overview';
   const year = movieInfo?.release_date.slice(0, 4) || 'No date';
   const noImage = noImageUrl.pathname;
-  console.log('No Image url', noImage);
   let posterUrl = '';
   if (movieInfo?.poster_path) {
     posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;

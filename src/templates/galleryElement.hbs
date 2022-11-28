@@ -1,13 +1,11 @@
 {{#each this}}
   <li class='gallery__item' data-id='{{id}}'>
-    <a href='#'>
-      {{#if posterUrl}}
-        <img class='item__image' src='{{posterUrl}}' alt='film poster' />
-      {{else}}
-        <img class='item__image' src='{{noImage}}' alt='#' />
-      {{/if}}
-    </a>
-    <h2 class='item__title'>{{movieName}}</h2>
+    {{#if posterUrl}}
+      <img class='item__image' src='{{posterUrl}}' alt='film poster' />
+    {{else}}
+      <img class='item__image' src='{{noImage}}' alt='#' />
+    {{/if}}
+    <h2 class='item__title'>{{title}}</h2>
     <span class='item__category-js item__category'>
       {{genres}}
     </span>
