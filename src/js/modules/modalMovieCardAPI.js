@@ -6,7 +6,8 @@ import storageAPI from './storageAPI';
 import refsMdl from './refsMdl';
 import { currentAppState } from '../main';
 
-import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
+// import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
+import modalMovieCardTpl from '../../templates/modal.hbs';
 import galleryElementTpl from '../../templates/galleryElement.hbs';
 
 async function showModalMovieCard(movieInfo) {
@@ -16,8 +17,9 @@ async function showModalMovieCard(movieInfo) {
 
   refsMdl.modalMovieCardEl.innerHTML = modalMovieCardTpl(movieInfo);
 
-  const watchBtn = document.querySelector('.js-watch-btn');
-  const queueBtn = document.querySelector('.js-queue-btn');
+  const watchBtn = refsMdl.modalMovieCardEl.querySelector('.js-watch-btn');
+  const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
+  const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
 
   if (isWatched) {
     watchBtn.textContent = 'Remove from watched';
@@ -47,18 +49,20 @@ async function showModalMovieCard(movieInfo) {
       onClose: () => {
         watchBtn.removeEventListener('click', lybraryAPI.lybBtnClickAction);
         queueBtn.removeEventListener('click', lybraryAPI.lybBtnClickAction);
+        closeBtn.removeEventListener('click', instance.close);
 
         watchBtn.removeEventListener('click', lybBtnClick);
         queueBtn.removeEventListener('click', lybBtnClick);
       },
     });
+    closeBtn.addEventListener('click', instance.close);
     instance.show();
   }
 }
 
 function lybBtnClick(e) {
   toggleButtonsType(e.target);
-  showLybrary(e.target.dataset.type);
+  // showLybrary(e.target.dataset.type);
 }
 
 function toggleButtonsType(btn) {
@@ -77,4 +81,5 @@ function showLybrary(type) {
 
 export default {
   showModalMovieCard,
+  showLybrary,
 };

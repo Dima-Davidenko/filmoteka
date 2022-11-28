@@ -18,6 +18,7 @@ const signOutBtnEl = document.querySelector('.js-signOut-btn');
 const userStatusEl = document.querySelector('.js-userStatus');
 const signInWindowEl = document.querySelector('.js-signIn-window');
 const paginationEl = document.querySelector('.js-pagination');
+const loadingInfoEl = document.querySelector('.js-loading-info');
 
 export default {
   header,
@@ -40,4 +41,5 @@ export default {
   signInWindowEl,
   paginationEl,
   modalMovieCardEl,
+  loadingInfoEl,
 };
