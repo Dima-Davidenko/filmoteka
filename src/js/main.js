@@ -31,8 +31,8 @@ const getOneMovieInfo = movieInfo => {
     ? `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`
     : null;
   const genres = movieInfo?.genre_ids
-    ? movieInfo.genre_ids.map(genreId => genresList[genreId])
-    : [];
+    ? movieInfo.genre_ids.map(genreId => genresList[genreId]).join(', ')
+    : '';
   const year = movieInfo?.release_date.slice(0, 4);
   const noImage = noImageUrl.pathname;
   return { movieName, posterUrl, genres, year, id, noImage };
@@ -47,7 +47,7 @@ const prepareModalCardInfo = movieInfo => {
   const vote_average = movieInfo?.vote_average || 'No Votes';
   const vote_count = movieInfo?.vote_count || 'No Votes';
   const popularity = movieInfo?.popularity || 'No Rates';
-  const genres = movieInfo?.genres.map(genre => genre.name) || [];
+  const genres = movieInfo?.genres.map(genre => genre.name).join(', ') || null;
   const original_title = movieInfo?.original_title || 'No Title';
   const overview = movieInfo?.overview || 'No overview';
   const year = movieInfo?.release_date.slice(0, 4) || 'No date';
