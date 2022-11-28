@@ -214,11 +214,11 @@ export default class firebaseAPI {
   async addToLyb(id, type, movieInfo) {
     console.log(`Movie is added to ${type}`, movieInfo);
     set(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`), {
-      id: movieInfo.id,
-      title: movieInfo.title,
-      posterUrl: movieInfo.posterUrl,
-      genres: movieInfo.genres,
-      year: movieInfo.year,
+      id: movieInfo.id || null,
+      title: movieInfo.title || null,
+      posterUrl: movieInfo.posterUrl || null,
+      genres: movieInfo.genres || null,
+      year: movieInfo.year || null,
     });
   }
   async removeFromLyb(id, type) {

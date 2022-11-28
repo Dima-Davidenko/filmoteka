@@ -47,7 +47,7 @@ const prepareModalCardInfo = movieInfo => {
   const vote_average = movieInfo?.vote_average || 'No Votes';
   const vote_count = movieInfo?.vote_count || 'No Votes';
   const popularity = movieInfo?.popularity || 'No Rates';
-  const genres = movieInfo?.genres.map(genre => genre.name).join(', ') || null;
+  const genres = movieInfo?.genres.map(genre => genre.name).join(', ') || '';
   const original_title = movieInfo?.original_title || 'No Title';
   const overview = movieInfo?.overview || 'No overview';
   const year = movieInfo?.release_date.slice(0, 4) || 'No date';
@@ -73,7 +73,6 @@ const prepareModalCardInfo = movieInfo => {
 
 const showPopular = async () => {
   currentAppState.galleryState = 'popular';
-  currentAppState.popular.currentPage = Math.ceil(Math.random() * 50);
   try {
     const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
     currentAppState.popular.totalPages = response.total_pages;
@@ -238,7 +237,7 @@ refsMdl.queuedBtnEl.addEventListener('click', handleQueuedBtnClick);
 refsMdl.galleryEl.addEventListener('click', handleGalleryClick);
 
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
-
+currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 showPopular();
 
 footerModal();
