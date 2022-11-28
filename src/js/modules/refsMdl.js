@@ -1,3 +1,4 @@
+const body = document.querySelector('body');
 const header = document.querySelector('.js-header');
 const logoEl = document.querySelector('.js-logo');
 const homeBtnEl = document.querySelector('.js-home-btn');
@@ -21,6 +22,7 @@ const paginationEl = document.querySelector('.js-pagination');
 const loadingInfoEl = document.querySelector('.js-loading-info');
 
 export default {
+  body,
   header,
   logoEl,
   homeBtnEl,

@@ -53,6 +53,7 @@ async function showModalMovieCard(movieInfo) {
   if (!document.querySelector('.basicLightbox')) {
     const instance = basicLightbox.create(refsMdl.modalMovieCardEl, {
       onShow: () => {
+        refsMdl.body.style.overflowY = 'hidden';
         watchBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
         queueBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
 
@@ -60,6 +61,7 @@ async function showModalMovieCard(movieInfo) {
         queueBtn.addEventListener('click', lybBtnClick);
       },
       onClose: () => {
+        refsMdl.body.style.overflowY = 'visible';
         watchBtn.removeEventListener('click', lybraryAPI.lybBtnClickAction);
         queueBtn.removeEventListener('click', lybraryAPI.lybBtnClickAction);
         closeBtn.removeEventListener('click', instance.close);
@@ -70,6 +72,14 @@ async function showModalMovieCard(movieInfo) {
     });
     closeBtn.addEventListener('click', instance.close);
     instance.show();
+    setTimeout(() => {
+      const backdrop = document.querySelector('.basicLightbox');
+      const modal = document.querySelector('.modal-window');
+      // debugger;
+      if (modal.scrollHeight > document.documentElement.clientHeight) {
+        backdrop.style.height = modal.clientHeight + 100 + 'px';
+      }
+    }, 40);
   }
 }
 

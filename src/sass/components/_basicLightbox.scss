@@ -26,7 +26,7 @@ $basicLightbox__timing: ease !default;
 
   &__placeholder {
     max-width: 100%;
-    transform: scale(0.9);
+    // transform: scale(0.9);
     transition: transform $basicLightbox__duration $basicLightbox__timing;
     z-index: 1;
     will-change: transform;
@@ -66,6 +66,6 @@ $basicLightbox__timing: ease !default;
   }
 
   &--visible &__placeholder {
-    transform: scale(1);
+    // transform: scale(1);
   }
 }
