@@ -76,9 +76,9 @@ async function showModalMovieCard(movieInfo) {
       const backdrop = document.querySelector('.basicLightbox__placeholder');
       const modal = document.querySelector('.modal-window');
       // debugger;
-      // if (modal.scrollHeight + 200 > document.documentElement.clientHeight) {
-      backdrop.style.paddingTop = Math.round(modal.clientHeight / 2.4) + 'px';
-      // }
+      if (modal.scrollHeight + 200 > document.documentElement.clientHeight) {
+        backdrop.style.paddingTop = Math.round(modal.clientHeight / 2.4) + 'px';
+      }
     }, 50);
   }
 }
