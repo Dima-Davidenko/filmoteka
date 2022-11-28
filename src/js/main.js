@@ -73,7 +73,6 @@ const prepareModalCardInfo = movieInfo => {
 
 const showPopular = async () => {
   currentAppState.galleryState = 'popular';
-  currentAppState.popular.currentPage = Math.ceil(Math.random() * 50);
   try {
     const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
     currentAppState.popular.totalPages = response.total_pages;
@@ -238,7 +237,7 @@ refsMdl.queuedBtnEl.addEventListener('click', handleQueuedBtnClick);
 refsMdl.galleryEl.addEventListener('click', handleGalleryClick);
 
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
-
+currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 showPopular();
 
 footerModal();

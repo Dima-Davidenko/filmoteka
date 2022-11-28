@@ -1,6 +1,9 @@
 .container-modal img {
   width: 100%;
 }
+body.modal-open {
+  overflow-y: hidden;
+}
 .modal-window {
   position: relative;
   // margin-top: 90px;
