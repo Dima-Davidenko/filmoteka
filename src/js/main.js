@@ -1,6 +1,5 @@
 import { Notify } from 'notiflix';
 import Pagination from 'tui-pagination';
-import '~/node_modules/tui-pagination/dist/tui-pagination.min.css';
 import refsMdl from './modules/refsMdl';
 import fetchAPI from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
