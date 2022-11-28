@@ -118,11 +118,26 @@ export default class firebaseAPI {
     }
     onAuthStateChanged(this.firebaseAuth, user => {
       if (user) {
+        this.userId = user.uid;
         refsMdl.signOutBtnEl.classList.remove('is-hidden');
         refsMdl.signInBtnEl.classList.add('is-hidden');
         refsMdl.userStatusEl.textContent = `Hello, ${user.displayName}`;
         console.log('User info from monitor', user);
-        this.userId = user.uid;
+
+        const watched = storageAPI.load('watched');
+        if (watched) {
+          watched.forEach(movie => {
+            this.addToLyb(movie.id, 'watched', movie);
+          });
+        }
+
+        const queue = storageAPI.load('queue');
+        if (queue) {
+          queue.forEach(movie => {
+            this.addToLyb(movie.id, 'queue', movie);
+          });
+        }
+
         // showApp();
         // showLoginState(user);
         // userId = user.uid;
@@ -132,7 +147,11 @@ export default class firebaseAPI {
         onValue(userLybraryWatched, watched => {
           uiAPI.hideLoadingInfo();
           const data = watched.val();
-          this.writeDataToStorage('watched', data);
+          if (data) {
+            const keys = Object.keys(data);
+            const watchedStorage = keys.map(key => data[key]);
+            this.writeDataToStorage('watched', watchedStorage);
+          }
           console.log('Data Monitor ---> Data from watched DB have changed', data);
           modalMovieCardAPI.showLybrary('watched');
         });
@@ -140,7 +159,11 @@ export default class firebaseAPI {
         onValue(userLybraryQueue, queue => {
           uiAPI.hideLoadingInfo();
           const data = queue.val();
-          this.writeDataToStorage('queue', data);
+          if (data) {
+            const keys = Object.keys(data);
+            const queueStorage = keys.map(key => data[key]);
+            this.writeDataToStorage('queue', queueStorage);
+          }
           console.log('Data Monitor ---> Data from queue DB have changed', data);
           modalMovieCardAPI.showLybrary('queue');
         });
@@ -166,9 +189,9 @@ export default class firebaseAPI {
     }
   }
   async isInLyb(id, type) {
-    const dbRef = ref(this.database);
-    const snapshot = await get(child(dbRef, `users/${this.userId}/lybrary/${type}/${id}`));
     try {
+      const dbRef = ref(this.database);
+      const snapshot = await get(child(dbRef, `users/${this.userId}/lybrary/${type}/${id}`));
       if (snapshot.exists()) {
         return true;
       } else {
@@ -176,6 +199,7 @@ export default class firebaseAPI {
       }
     } catch (error) {
       console.log(error);
+      return false;
     }
   }
 
@@ -187,7 +211,7 @@ export default class firebaseAPI {
     console.log(`Movie is added to ${type}`, movieInfo);
     set(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`), {
       id: movieInfo.id,
-      movieName: movieInfo.title,
+      title: movieInfo.title,
       posterUrl: movieInfo.posterUrl,
       genres: movieInfo.genres,
       year: movieInfo.year,
@@ -202,9 +226,9 @@ export default class firebaseAPI {
   }
 
   async addToWatched(movieInfo) {
-    set(ref(this.database, `users/${this.userId}/lybrary/watched/${movieInfo.filmId}`), {
-      id: movieInfo.filmId,
-      movieName: movieInfo.movieName,
+    set(ref(this.database, `users/${this.userId}/lybrary/watched/${movieInfo.id}`), {
+      id: movieInfo.id,
+      title: movieInfo.title,
       posterUrl: movieInfo.posterUrl,
       genres: movieInfo.genres,
       year: movieInfo.year,
@@ -212,9 +236,9 @@ export default class firebaseAPI {
   }
 
   async addToQueued(movieInfo) {
-    set(ref(this.database, `users/${this.userId}/lybrary/queued/${movieInfo.filmId}`), {
-      filmId: movieInfo.filmId,
-      movieName: movieInfo.movieName,
+    set(ref(this.database, `users/${this.userId}/lybrary/queued/${movieInfo.id}`), {
+      id: movieInfo.id,
+      title: movieInfo.title,
       posterUrl: movieInfo.posterUrl,
       genres: movieInfo.genres,
       year: movieInfo.year,

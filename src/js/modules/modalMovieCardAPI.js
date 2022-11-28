@@ -11,9 +11,22 @@ import modalMovieCardTpl from '../../templates/modal.hbs';
 import galleryElementTpl from '../../templates/galleryElement.hbs';
 
 async function showModalMovieCard(movieInfo) {
-  const isWatched = await firebaseInstance.isInLyb(movieInfo.id, 'watched');
+  let isWatched;
+  let isQueued;
 
-  const isQueued = await firebaseInstance.isInLyb(movieInfo.id, 'queue');
+  if (firebaseInstance.userId) {
+    try {
+      isWatched = await firebaseInstance.isInLyb(movieInfo.id, 'watched');
+      isQueued = await firebaseInstance.isInLyb(movieInfo.id, 'queue');
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    const watched = storageAPI.load('watched');
+    isWatched = watched ? watched.find(movie => movie.id === movieInfo.id) : null;
+    const queue = storageAPI.load('queue');
+    isQueued = queue ? queue.find(movie => movie.id === movieInfo.id) : null;
+  }
 
   refsMdl.modalMovieCardEl.innerHTML = modalMovieCardTpl(movieInfo);
 

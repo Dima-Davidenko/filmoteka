@@ -3,11 +3,17 @@ import { firebaseInstance } from '../main';
 
 function lybBtnClickAction(e) {
   if (e.target.dataset.action === 'add') {
-    addToFirebase(+e.target.dataset.id, e.target.dataset.type);
-    // addToLyb(+e.target.dataset.id, e.target.dataset.type);
+    if (firebaseInstance.userId) {
+      addToFirebase(+e.target.dataset.id, e.target.dataset.type);
+    } else {
+      addToLyb(+e.target.dataset.id, e.target.dataset.type);
+    }
   } else {
-    // removeFromLyb(+e.target.dataset.id, e.target.dataset.type);
-    removeFromFirebase(+e.target.dataset.id, e.target.dataset.type);
+    if (firebaseInstance.userId) {
+      removeFromFirebase(+e.target.dataset.id, e.target.dataset.type);
+    } else {
+      removeFromLyb(+e.target.dataset.id, e.target.dataset.type);
+    }
   }
 }
 

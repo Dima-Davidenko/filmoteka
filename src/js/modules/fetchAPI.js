@@ -18,7 +18,7 @@ const fetchPopular = async page => {
 
 const fetchId = async movie_id => {
   uiAPI.showLoadingInfo();
-  const { data } = await axiosTMDB.get(`movie/${movie_id}`);
+  const { data } = await axiosTMDB.get(`movie/${movie_id}`, { params: { language: 'en-US' } });
   uiAPI.hideLoadingInfo();
   return data;
 };

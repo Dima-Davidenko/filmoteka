@@ -20,4 +20,5 @@ export const uiAPI = {
     refsMdl.loadingInfoEl.classList.add('is-hidden');
   },
   renderMainHeader: () => {},
+  showSignInInfo: () => {},
 };
