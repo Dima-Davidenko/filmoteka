@@ -9,6 +9,7 @@ import firebaseAPI from './modules/firebaseAPI';
 import storageAPI from './modules/storageAPI';
 import galleryElementTpl from '../templates/galleryElement.hbs';
 import modalMovieCardAPI from './modules/modalMovieCardAPI';
+import footerModal from './modules/footerModal';
 
 export const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.signOutBtnEl);
 export const currentAppState = {
@@ -239,3 +240,5 @@ refsMdl.galleryEl.addEventListener('click', handleGalleryClick);
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
 
 showPopular();
+
+footerModal();
