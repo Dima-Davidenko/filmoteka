@@ -294,6 +294,10 @@ td {
     width: 125px;
   }
 }
+.btn-add:hover {
+  background-color: $orange-clr;
+  color: $main-white-clr;
+}
 .activeBtn {
   border: 1px solid $orange-clr;
   color: $main-white-clr;
