@@ -114,6 +114,7 @@ function handleLogoBtnClick() {
 }
 
 const handleHomeBtnClick = async e => {
+  refsMdl.header.classList.remove('header--lybrary');
   setActiveButton(e.target);
   refsMdl.searchInputEl.value = '';
   refsMdl.searchFormEl.classList.remove('is-hidden');
@@ -173,6 +174,7 @@ const handleFormSubmit = async event => {
 
 const handleLybraryBtnClick = async e => {
   refsMdl.paginationEl.classList.add('is-hidden');
+  refsMdl.header.classList.add('header--lybrary');
   if (!firebaseInstance.userId) uiAPI.showLoadingInfo();
   setActiveButton(e.target);
   currentAppState.galleryState = 'watched';
