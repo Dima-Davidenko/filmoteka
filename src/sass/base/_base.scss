@@ -6,6 +6,9 @@ body {
   font-weight: 500;
   color: $main-black-clr;
   overflow-y: scroll;
+  &.dark-theme {
+    background-color: rgb(44, 43, 43);
+  }
 }
 ul {
   padding: 0;

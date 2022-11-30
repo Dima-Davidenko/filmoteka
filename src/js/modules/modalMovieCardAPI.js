@@ -81,14 +81,6 @@ async function showModalMovieCard(movieInfo) {
     });
     closeBtn.addEventListener('click', instance.close);
     instance.show();
-    setTimeout(() => {
-      const backdrop = document.querySelector('.basicLightbox__placeholder');
-      const modal = document.querySelector('.modal-window');
-      // debugger;
-      // if (modal.scrollHeight + 200 > document.documentElement.clientHeight) {
-      //   backdrop.style.paddingTop = Math.round(modal.clientHeight / 2.4) + 'px';
-      // }
-    }, 50);
   }
 }
 

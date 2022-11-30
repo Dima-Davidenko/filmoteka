@@ -19,8 +19,10 @@ $basicLightbox__timing: ease !default;
   transition: opacity $basicLightbox__duration $basicLightbox__timing;
   z-index: $basicLightbox__zIndex;
   will-change: opacity;
-  overflow-y: scroll;
 
+  @media screen and (max-width: 768px) {
+    align-items: flex-start;
+  }
   &--visible {
     opacity: 1;
   }

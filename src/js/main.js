@@ -39,9 +39,12 @@ const getOneMovieInfo = movieInfo => {
   if (movieInfo?.release_date) {
     year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
   }
-
+  let vote_average = 0;
+  if (movieInfo?.vote_average) {
+    vote_average = movieInfo.vote_average.toFixed(2);
+  }
   const noImage = noImageUrl.pathname;
-  return { title, posterUrl, genres, year, id, noImage };
+  return { title, posterUrl, genres, year, id, noImage, vote_average };
 };
 
 const prepareMoviesInfo = moviesArr => {
@@ -96,7 +99,7 @@ const showPopular = async () => {
     const pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
-      visiblePages: 10,
+      visiblePages: 5,
       centerAlign: true,
       page: currentAppState.popular.currentPage,
     });
@@ -158,7 +161,7 @@ const showSearch = async () => {
     const pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
-      visiblePages: 10,
+      visiblePages: 5,
       centerAlign: true,
       page: currentAppState.search.currentPage,
     });
@@ -219,8 +222,6 @@ const handleQueuedBtnClick = () => {
   refsMdl.galleryEl.innerHTML = galleryElementTpl(queued);
 };
 
-const handlePaginationClick = e => {};
-
 const handleGalleryClick = async e => {
   const card = e.target.closest('.gallery__item');
   if (!card) return;
@@ -264,7 +265,7 @@ async function handleFilterFormChange({ target }) {
     const pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
-      visiblePages: 10,
+      visiblePages: 5,
       centerAlign: true,
       page: currentAppState.search.currentPage,
     });
@@ -300,11 +301,6 @@ async function showFiltered(page) {
 }
 // const handleTeamDescrClick = () => {};
 
-function handleFiltersResetBtnClick() {
-  storageAPI.save('filters', []);
-  showPopular();
-}
-
 function handleUpBtnClick() {
   window.scroll({
     top: 0,
@@ -332,11 +328,11 @@ refsMdl.filtersResetBtnEl.addEventListener('click', showPopular);
 refsMdl.themeSwitchFormEl.addEventListener('change', e => {
   const isDark = e.target.checked;
   if (isDark) {
-    refsMdl.body.style.backgroundColor = 'rgb(44, 43, 43)';
     refsMdl.themeNameEl.textContent = 'Темна тема';
+    refsMdl.body.classList.add('dark-theme');
   } else {
-    refsMdl.body.style.backgroundColor = 'transparent';
     refsMdl.themeNameEl.textContent = 'Світла тема';
+    refsMdl.body.classList.remove('dark-theme');
   }
 });
 

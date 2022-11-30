@@ -13,8 +13,8 @@ export default class fetchAPI {
       },
     });
     this.filterParams = {
-      sort_by: 'popularity.desc',
-      ['vote_count.gte']: 5,
+      sort_by: 'vote_average.desc',
+      ['vote_count.gte']: 10,
     };
   }
   async fetchPopular(page) {
