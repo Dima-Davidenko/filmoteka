@@ -1,15 +1,18 @@
 .gallery {
   display: flex;
   justify-content: center;
-
   @media screen and (max-width: 767px) {
     padding-bottom: 20px;
     flex-direction: column;
+    min-height: calc(100vh - 360px);
   }
   @media screen and (min-width: 768px) {
     flex-direction: row;
     flex-wrap: wrap;
     padding-bottom: 60px;
+    min-height: calc(100vh - 360px);
+  }
+  @media screen and (min-width: 1280px) {
   }
 }
 
@@ -112,6 +115,13 @@
 .tui-pagination strong {
   background-color: $orange-clr;
   border-color: transparent;
+}
+.tui-pagination .tui-first-child.tui-is-selected {
+  border-left: 1px solid $orange-clr;
+}
+
+.tui-pagination .tui-last-child.tui-is-selected {
+  border-right: 1px solid $orange-clr;
 }
 .activePage {
   background-color: $orange-clr;

@@ -11,6 +11,8 @@
 }
 
 .header--search {
+  height: 230px;
+
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.56), rgba(0, 0, 0, 0.56)),
     url(../images/header/main-320@1x.png);
   @media screen and (min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
@@ -160,6 +162,7 @@ input::placeholder {
       url(../images/header/library@2x-320.jpg);
   }
   @media screen and (min-width: 768px) {
+    height: 219px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0.56), rgba(0, 0, 0, 0.56)),
       url(../images/header/library@1x-768.jpg);
     @media screen and (min-device-pixel-ratio: 2),

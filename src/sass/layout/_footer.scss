@@ -54,7 +54,7 @@
   margin-top: 10px;
   margin-bottom: 0;
   text-align: center;
-  max-width: 90px;
+  max-width: 100px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -218,6 +218,7 @@
 .team-flex {
   display: flex;
   align-items: center;
+  justify-content: space-around;
 }
 .svg-exit {
   fill: currentColor;
