@@ -23,6 +23,8 @@ const loadingInfoEl = document.querySelector('.js-loading-info');
 const registrationInfoEl = document.querySelector('.js-registration-info');
 const filtersFormEl = document.querySelector('.js-filters-form');
 const filtersResetBtnEl = document.querySelector('.js-filtersReset-btn');
+const themeSwitchFormEl = document.querySelector('.js-theme-form');
+const themeNameEl = document.querySelector('.js-theme-name');
 
 export default {
   body,
@@ -50,4 +52,6 @@ export default {
   registrationInfoEl,
   filtersFormEl,
   filtersResetBtnEl,
+  themeSwitchFormEl,
+  themeNameEl,
 };

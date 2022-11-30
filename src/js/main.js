@@ -321,6 +321,16 @@ refsMdl.galleryEl.addEventListener('click', handleGalleryClick);
 
 refsMdl.filtersFormEl.addEventListener('change', handleFilterFormChange);
 refsMdl.filtersResetBtnEl.addEventListener('click', showPopular);
+refsMdl.themeSwitchFormEl.addEventListener('change', e => {
+  const isDark = e.target.checked;
+  if (isDark) {
+    refsMdl.body.style.backgroundColor = 'rgb(44, 43, 43)';
+    refsMdl.themeNameEl.textContent = 'Темна тема';
+  } else {
+    refsMdl.body.style.backgroundColor = 'transparent';
+    refsMdl.themeNameEl.textContent = 'Світла тема';
+  }
+});
 
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
 currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
