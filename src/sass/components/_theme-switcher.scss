@@ -1,3 +1,15 @@
+.theme-wrapper {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 0;
+}
+.js-theme-name {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
 /* The switch - the box around the slider */
 .switch {
   position: relative;
