@@ -4,11 +4,13 @@ import { firebaseInstance } from '../main';
 import lybraryAPI from './lybraryAPI';
 import storageAPI from './storageAPI';
 import refsMdl from './refsMdl';
+import fetchAPI from './fetchAPI';
 import { currentAppState } from '../main';
 
 // import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import modalMovieCardTpl from '../../templates/modal.hbs';
 import galleryElementTpl from '../../templates/galleryElement.hbs';
+import { async } from '@firebase/util';
 
 async function showModalMovieCard(movieInfo) {
   let isWatched;
@@ -33,6 +35,12 @@ async function showModalMovieCard(movieInfo) {
   const watchBtn = refsMdl.modalMovieCardEl.querySelector('.js-watch-btn');
   const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
+  const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
+  if (!movieInfo.video) {
+    trailerBtn.classList.add('is-hidden');
+  } else {
+    trailerBtn.dataset.video = movieInfo.video;
+  }
 
   if (isWatched) {
     watchBtn.textContent = 'Remove from watched';
@@ -57,6 +65,7 @@ async function showModalMovieCard(movieInfo) {
         watchBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
         queueBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
 
+        trailerBtn.addEventListener('click', trailerBtnClickAction);
         watchBtn.addEventListener('click', lybBtnClick);
         queueBtn.addEventListener('click', lybBtnClick);
       },
@@ -81,6 +90,16 @@ async function showModalMovieCard(movieInfo) {
       }
     }, 50);
   }
+}
+
+function trailerBtnClickAction(e) {
+  const id = e.target.dataset.video;
+
+  const markup = `<iframe src="https://www.youtube.com/embed/${id}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+  encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>`;
+  const instance = basicLightbox.create(markup);
+  instance.show();
 }
 
 function lybBtnClick(e) {

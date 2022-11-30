@@ -56,6 +56,7 @@ const prepareModalCardInfo = movieInfo => {
   if (movieInfo?.poster_path) {
     posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
   }
+  const video = movieInfo?.videos?.length ? movieInfo.videos[0].key : null;
   return {
     id,
     title,
@@ -68,6 +69,7 @@ const prepareModalCardInfo = movieInfo => {
     year,
     posterUrl,
     noImage,
+    video,
   };
 };
 
