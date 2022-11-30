@@ -6,17 +6,11 @@ body.modal-open {
 }
 .modal-window {
   position: relative;
-  // margin-top: 90px;
   margin-bottom: 38px;
-  // overflow-y: scroll;
-  // scroll-behavior: smooth;
-  // top: 50%;
-  // left: 50%;
-  // transform: translate(-50%, -50%);
   z-index: 2;
   background-color: $main-white-clr;
   padding: 48px 20px;
-  overflow: auto;
+  // overflow: auto;
   background: $main-white-clr;
   @media screen and (min-width: 768px) {
     margin-top: 0px;
@@ -44,13 +38,19 @@ body.modal-open {
   align-items: center;
   background-color: $main-white-clr;
   border: none;
-  /* transform: rotate(-90deg); */
-  /* box-shadow: 0 0 20px 1px rgb(123, 119, 119); */
 
-  @media screen and (min-width: 1280px) {
+  &:hover {
+    border-radius: 50%;
+    background-color: #fff;
+    color: $orange-clr;
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px 1px $orange-clr;
   }
 }
-
+.js-watch-btn {
+  background-color: $orange-clr;
+  color: black;
+}
 .close-btn-modal {
   width: 14px;
   height: 14px;
@@ -69,7 +69,6 @@ body.modal-open {
   position: relative;
   display: block;
   width: 240px;
-  // height: 100%;
   height: auto;
   border-radius: 5px;
   overflow: hidden;
@@ -284,6 +283,15 @@ td {
     border: 1px solid $main-black-clr;
     color: $main-white-clr;
     background-color: $orange-clr;
+  }
+  &:hover {
+    border: 2px solid $orange-clr;
+    // border-radius: 50%;
+    background-color: #fff;
+    color: $orange-clr;
+    transform: translateY(-2px);
+    // box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 0 0 20px 1px $orange-clr;
   }
 
   @media screen and (min-width: 1280px) {
