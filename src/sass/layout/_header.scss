@@ -330,3 +330,18 @@ input::placeholder {
     top: 45px;
   }
 }
+
+.theme-wrapper {
+  position: absolute;
+  left: 20px;
+  bottom: 14px;
+  @media screen and (min-width: 760px) {
+    left: 65px;
+  }
+  @media screen and (min-width: 1280px) {
+    left: 32px;
+  }
+}
+.js-theme-form {
+  margin-top: 5px;
+}

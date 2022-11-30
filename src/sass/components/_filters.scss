@@ -4,23 +4,38 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
-  & :not(:last-child) {
-    margin-right: 10px;
+  // border-radius: 10px;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  // & :not(:last-child) {
+  //   margin-right: 10px;
+  // }
+  // background-color: #181416;
+  gap: 10px;
+  @media screen and (max-width: 768px) {
   }
 }
 
 .filters__item {
-  background-color: #000;
-  color: red;
+  border: none;
+  background-color: #de551a;
+
+  color: black;
   border-radius: 5px;
-  padding: 5px;
+  font-weight: 500;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.14;
   cursor: pointer;
 }
 
 .js-filtersReset-btn {
-  background-color: #000;
+  background-color: #de551a;
   font-size: inherit;
-  color: red;
+  color: black;
   border-radius: 5px;
+  padding: 8px;
+  font-weight: 500;
+  line-height: 1.14;
+  border: none;
 }
