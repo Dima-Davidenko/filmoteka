@@ -335,3 +335,11 @@ td {
 .basicLightbox {
   overflow-y: scroll;
 }
+
+.js-trailer-btn {
+  background-image: url('../images/upBtn.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 0;
+}
