@@ -35,7 +35,11 @@ const getOneMovieInfo = movieInfo => {
   const genres = movieInfo?.genre_ids
     ? movieInfo.genre_ids.map(genreId => genresList[genreId]).join(', ')
     : '';
-  const year = movieInfo?.release_date.slice(0, 4);
+  let year = '';
+  if (movieInfo?.release_date) {
+    year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
+  }
+
   const noImage = noImageUrl.pathname;
   return { title, posterUrl, genres, year, id, noImage };
 };
@@ -52,7 +56,10 @@ const prepareModalCardInfo = movieInfo => {
   const genres = movieInfo?.genres.map(genre => genre.name).join(', ') || '';
   const original_title = movieInfo?.original_title || 'No Title';
   const overview = movieInfo?.overview || 'No overview';
-  const year = movieInfo?.release_date.slice(0, 4) || 'No date';
+  let year = '';
+  if (movieInfo?.release_date) {
+    year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
+  }
   const noImage = noImageUrl.pathname;
   let posterUrl = '';
   if (movieInfo?.poster_path) {
@@ -246,7 +253,7 @@ async function handleFilterFormChange({ target }) {
     const response = await fetchAPIinstance.fetchFiltered();
     console.log(response);
     if (!response.results.length) {
-      Notify.failure('Нет таких фильмов :)');
+      Notify.failure('Немає таких фільмів :)');
       return;
     }
     const processedInfo = prepareMoviesInfo(response.results);

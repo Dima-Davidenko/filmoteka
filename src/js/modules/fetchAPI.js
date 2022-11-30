@@ -14,6 +14,7 @@ export default class fetchAPI {
     });
     this.filterParams = {
       sort_by: 'popularity.desc',
+      ['vote_count.gte']: 5,
     };
   }
   async fetchPopular(page) {
