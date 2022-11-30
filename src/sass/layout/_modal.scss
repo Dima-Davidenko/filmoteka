@@ -17,7 +17,7 @@ iframe {
 }
 .modal-window {
   position: relative;
-  // margin-top: 90px;
+  margin-top: 20px;
   margin-bottom: 38px;
   // overflow-y: scroll;
   // scroll-behavior: smooth;
@@ -29,12 +29,14 @@ iframe {
   padding: 48px 20px;
   overflow: auto;
   background: $main-white-clr;
+
   @media screen and (min-width: 768px) {
     margin-top: 0px;
+    margin-bottom: 0;
     padding: 40px 72px 40px 36px;
     display: flex;
     width: 704px;
-    height: 552px;
+    min-height: 552px;
   }
   @media screen and (min-width: 1280px) {
     padding: 40px 12px;
@@ -44,6 +46,7 @@ iframe {
 }
 
 .btn-close {
+  padding: 0;
   position: absolute;
   right: 10px;
   top: 10px;
@@ -55,8 +58,12 @@ iframe {
   align-items: center;
   background-color: $main-white-clr;
   border: none;
-  /* transform: rotate(-90deg); */
-  /* box-shadow: 0 0 20px 1px rgb(123, 119, 119); */
+  &:hover {
+    border-radius: 50%;
+    color: $orange-clr;
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px 1px $orange-clr;
+  }
 
   @media screen and (min-width: 1280px) {
   }
@@ -308,6 +315,13 @@ td {
 .btn-add:hover {
   background-color: $orange-clr;
   color: $main-white-clr;
+  &:hover {
+    border: 2px solid $orange-clr;
+    background-color: $orange-clr;
+    color: $main-white-clr;
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px 1px $orange-clr;
+  }
 }
 .activeBtn {
   border: 1px solid $orange-clr;
