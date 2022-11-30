@@ -25,6 +25,7 @@ const filtersFormEl = document.querySelector('.js-filters-form');
 const filtersResetBtnEl = document.querySelector('.js-filtersReset-btn');
 const themeSwitchFormEl = document.querySelector('.js-theme-form');
 const themeNameEl = document.querySelector('.js-theme-name');
+const upBtnEl = document.querySelector('.up-button');
 
 export default {
   body,
@@ -54,4 +55,5 @@ export default {
   filtersResetBtnEl,
   themeSwitchFormEl,
   themeNameEl,
+  upBtnEl,
 };

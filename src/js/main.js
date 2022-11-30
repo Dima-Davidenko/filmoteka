@@ -305,6 +305,13 @@ function handleFiltersResetBtnClick() {
   showPopular();
 }
 
+function handleUpBtnClick() {
+  window.scroll({
+    top: 0,
+    behavior: 'smooth',
+  });
+}
+
 refsMdl.logoEl.addEventListener('click', handleLogoBtnClick);
 refsMdl.homeBtnEl.addEventListener('click', handleHomeBtnClick);
 
@@ -314,6 +321,7 @@ refsMdl.lybraryBtnEl.addEventListener('click', handleLybraryBtnClick);
 
 refsMdl.watchedBtnEl.addEventListener('click', handleWatchedBtnClick);
 refsMdl.queuedBtnEl.addEventListener('click', handleQueuedBtnClick);
+refsMdl.upBtnEl.addEventListener('click', handleUpBtnClick);
 
 // refsMdl.paginationEl.addEventListener('click', handlePaginationClick);
 
@@ -332,9 +340,20 @@ refsMdl.themeSwitchFormEl.addEventListener('change', e => {
   }
 });
 
+function upButton() {
+  window.onscroll = function () {
+    if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+      refsMdl.upBtnEl.classList.add('up-button--visible');
+    } else {
+      refsMdl.upBtnEl.classList.remove('up-button--visible');
+    }
+  };
+}
+
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
 currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 showPopular();
+upButton();
 storageAPI.save('filters', []);
 
 footerModal();
