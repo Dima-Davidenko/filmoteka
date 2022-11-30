@@ -4,6 +4,17 @@
 body.modal-open {
   overflow-y: hidden;
 }
+
+iframe {
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    width: 560px;
+    height: 315px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 720px;
+    height: 405px;
+  }
+}
 .modal-window {
   position: relative;
   // margin-top: 90px;
