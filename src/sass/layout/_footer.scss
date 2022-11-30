@@ -9,6 +9,9 @@
   @media screen and (min-width: 1280px) {
     padding: 30px 370px;
   }
+  .dark-theme & {
+    background-color: transparent;
+  }
 }
 
 .reserved {
