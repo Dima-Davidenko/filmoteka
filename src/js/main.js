@@ -39,9 +39,12 @@ const getOneMovieInfo = movieInfo => {
   if (movieInfo?.release_date) {
     year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
   }
-
+  let vote_average = 0;
+  if (movieInfo?.vote_average) {
+    vote_average = movieInfo.vote_average.toFixed(2);
+  }
   const noImage = noImageUrl.pathname;
-  return { title, posterUrl, genres, year, id, noImage };
+  return { title, posterUrl, genres, year, id, noImage, vote_average };
 };
 
 const prepareMoviesInfo = moviesArr => {
