@@ -118,6 +118,7 @@ export default class firebaseAPI {
     }
     onAuthStateChanged(this.firebaseAuth, user => {
       if (user) {
+        uiAPI.hideRegistrationInfo();
         this.userId = user.uid;
         refsMdl.signOutBtnEl.classList.remove('is-hidden');
         refsMdl.signInBtnEl.classList.add('is-hidden');

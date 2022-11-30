@@ -20,6 +20,7 @@ const userStatusEl = document.querySelector('.js-userStatus');
 const signInWindowEl = document.querySelector('.js-signIn-window');
 const paginationEl = document.querySelector('.js-pagination');
 const loadingInfoEl = document.querySelector('.js-loading-info');
+const registrationInfoEl = document.querySelector('.js-registration-info');
 
 export default {
   body,
@@ -44,4 +45,5 @@ export default {
   paginationEl,
   modalMovieCardEl,
   loadingInfoEl,
+  registrationInfoEl,
 };

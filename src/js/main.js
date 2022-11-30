@@ -122,6 +122,7 @@ const handleHomeBtnClick = async e => {
   refsMdl.searchFormEl.classList.remove('is-hidden');
   refsMdl.watchedBtnEl.classList.add('is-hidden');
   refsMdl.queuedBtnEl.classList.add('is-hidden');
+  uiAPI.hideRegistrationInfo();
   currentAppState.popular.currentPage = 1;
   showPopular();
 };
@@ -177,7 +178,7 @@ const handleFormSubmit = async event => {
 const handleLybraryBtnClick = async e => {
   refsMdl.paginationEl.classList.add('is-hidden');
   refsMdl.header.classList.add('header--lybrary');
-  if (!firebaseInstance.userId) uiAPI.showLoadingInfo();
+  if (!firebaseInstance.userId) uiAPI.showRegistrationInfo();
   setActiveButton(e.target);
   currentAppState.galleryState = 'watched';
   refsMdl.watchedBtnEl.classList.add('active');

@@ -12,7 +12,7 @@ const axiosTMDB = axios.create({
 const fetchPopular = async page => {
   uiAPI.showLoadingInfo();
   const { data } = await axiosTMDB.get('trending/movie/week', {
-    params: { page, language: 'uk' },
+    params: { page, language: 'uk', adult: false },
   });
   uiAPI.hideLoadingInfo();
   return data;

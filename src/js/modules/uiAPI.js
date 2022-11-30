@@ -19,6 +19,11 @@ export const uiAPI = {
   hideLoadingInfo: () => {
     refsMdl.loadingInfoEl.classList.add('is-hidden');
   },
-  renderMainHeader: () => {},
+  showRegistrationInfo: () => {
+    refsMdl.registrationInfoEl.classList.remove('is-hidden');
+  },
+  hideRegistrationInfo: () => {
+    refsMdl.registrationInfoEl.classList.add('is-hidden');
+  },
   showSignInInfo: () => {},
 };
