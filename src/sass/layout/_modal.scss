@@ -1,6 +1,7 @@
 .container-modal img {
   width: 100%;
 }
+
 body.modal-open {
   overflow-y: hidden;
 }
@@ -15,15 +16,12 @@ iframe {
     height: 405px;
   }
 }
+
 .modal-window {
   position: relative;
-  // margin-top: 90px;
+  margin-top: 20px;
   margin-bottom: 38px;
-  // overflow-y: scroll;
-  // scroll-behavior: smooth;
-  // top: 50%;
-  // left: 50%;
-  // transform: translate(-50%, -50%);
+
   z-index: 2;
   background-color: $main-white-clr;
   padding: 48px 20px;
@@ -55,11 +53,6 @@ iframe {
   align-items: center;
   background-color: $main-white-clr;
   border: none;
-  /* transform: rotate(-90deg); */
-  /* box-shadow: 0 0 20px 1px rgb(123, 119, 119); */
-
-  @media screen and (min-width: 1280px) {
-  }
 }
 
 .close-btn-modal {
@@ -70,29 +63,26 @@ iframe {
 
   border: 2px solid $main-black-clr;
   transform: rotate(-90deg);
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
 
 .img-modal {
   position: relative;
   display: block;
   width: 240px;
-  // height: 100%;
   height: auto;
   border-radius: 5px;
   overflow: hidden;
-  // object-fit:scale-down;
   margin: 0 auto 20px auto;
+
   @media screen and (min-width: 768px) {
     width: 264px;
   }
+
   @media screen and (min-width: 1280px) {
     width: 375px;
   }
 }
+
 .modal-description {
   max-width: 240px;
 }
@@ -130,30 +120,16 @@ iframe {
     line-height: 35px;
   }
 }
-/* 
-  .preview-modal {
-    padding: 0;
-  } */
 
 .li-modal {
   list-style-type: none;
-
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
+
 .list-preview {
-  /* font-size: 12px; */
   line-height: 1.14;
   letter-spacing: 0em;
   text-align: left;
   color: #8c8c8c;
-
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
 
 .span-modal-value {
@@ -162,11 +138,6 @@ iframe {
   width: 36px;
   height: 16px;
   border-radius: 5px;
-
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
 
 table {
@@ -179,13 +150,6 @@ table {
   line-height: 1.33;
   color: #8c8c8c;
   text-align: left;
-  // &:not(:last-child){
-  //     margin-bottom: 10px;
-  // }
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
 
 .info-span-avarage {
@@ -197,32 +161,21 @@ table {
   align-items: flex-end;
   justify-content: center;
   color: $main-white-clr;
-
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
 .info-span-all {
   background: $secondary-grey-clr;
   border-radius: 5px;
-
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
+
 td {
   color: $main-black-clr;
   line-height: 1.14;
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
+
 .modal__item-position {
   margin-bottom: 20px;
 }
+
 .about-title {
   color: $main-black-clr;
   display: flex;
@@ -230,18 +183,10 @@ td {
   text-transform: uppercase;
   margin-bottom: 8px;
   line-height: 1.33;
-
-  @media screen and (min-width: 768px) {
-  }
-  @media screen and (min-width: 1280px) {
-  }
 }
-.about-description {
-  // text-align: justify;
-  line-height: 1.66;
 
-  @media screen and (min-width: 1280px) {
-  }
+.about-description {
+  line-height: 1.66;
 }
 
 @media screen and (min-width: 768px) {
@@ -249,6 +194,7 @@ td {
     margin: 0;
   }
 }
+
 .btn-modal {
   display: flex;
   justify-content: flex-start;
@@ -264,12 +210,6 @@ td {
   }
 }
 
-//   @media screen and (min-width: 1280px) {
-//     .btn-modal {
-//       display: flex;
-//       justify-content: center;
-//     }
-//   }
 .btn-watch {
   margin-right: 20px;
   @media screen and (min-width: 768px) {
@@ -305,10 +245,12 @@ td {
     width: 125px;
   }
 }
+
 .btn-add:hover {
   background-color: $orange-clr;
   color: $main-white-clr;
 }
+
 .activeBtn {
   border: 1px solid $orange-clr;
   color: $main-white-clr;
@@ -318,6 +260,33 @@ td {
 .info-span-original-title {
   text-transform: uppercase;
 }
+
 .basicLightbox {
   overflow-y: scroll;
+}
+
+.img-modal .js-trailer-btn {
+  position: absolute;
+  opacity: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  background-color: transparent;
+  color: white;
+
+  padding: 10px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+}
+
+.img-modal .js-trailer-btn:hover {
+  background-color: $main-white-clr;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  border: 2px solid $main-black-clr;
 }

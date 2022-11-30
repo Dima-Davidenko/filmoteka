@@ -13,12 +13,13 @@ $basicLightbox__timing: ease !default;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  // height: 100vh;
   background: $basicLightbox__background;
   opacity: 0.01; // Start with .01 to avoid the repaint that happens from 0 to .01
   transition: opacity $basicLightbox__duration $basicLightbox__timing;
   z-index: $basicLightbox__zIndex;
   will-change: opacity;
+  overflow-y: scroll;
 
   &--visible {
     opacity: 1;
@@ -65,7 +66,7 @@ $basicLightbox__timing: ease !default;
     pointer-events: none;
   }
 
-  &--visible &__placeholder {
-    // transform: scale(1);
-  }
+  // &--visible &__placeholder {
+  //   transform: scale(1);
+  // }
 }
