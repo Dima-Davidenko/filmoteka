@@ -6,6 +6,9 @@
       <img class='item__image' src='{{noImage}}' alt='#' />
     {{/if}}
     <h2 class='item__title'>{{title}}</h2>
+    {{#if vote_average}}
+      <span class='item__vote'>{{vote_average}}</span>
+    {{/if}}
     <span class='item__category-js item__category'>
       {{genres}}
     </span>

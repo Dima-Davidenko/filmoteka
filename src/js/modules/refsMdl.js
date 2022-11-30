@@ -21,6 +21,11 @@ const signInWindowEl = document.querySelector('.js-signIn-window');
 const paginationEl = document.querySelector('.js-pagination');
 const loadingInfoEl = document.querySelector('.js-loading-info');
 const registrationInfoEl = document.querySelector('.js-registration-info');
+const filtersFormEl = document.querySelector('.js-filters-form');
+const filtersResetBtnEl = document.querySelector('.js-filtersReset-btn');
+const themeSwitchFormEl = document.querySelector('.js-theme-form');
+const themeNameEl = document.querySelector('.js-theme-name');
+const upBtnEl = document.querySelector('.up-button');
 
 export default {
   body,
@@ -46,4 +51,9 @@ export default {
   modalMovieCardEl,
   loadingInfoEl,
   registrationInfoEl,
+  filtersFormEl,
+  filtersResetBtnEl,
+  themeSwitchFormEl,
+  themeNameEl,
+  upBtnEl,
 };

@@ -1,7 +1,7 @@
 import { Notify } from 'notiflix';
 import Pagination from 'tui-pagination';
 import refsMdl from './modules/refsMdl';
-import fetchAPI from './modules/fetchAPI';
+import fetchAPIclass from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
 import { genresList } from './utils/genresList';
 import { uiAPI } from './modules/uiAPI';
@@ -10,6 +10,7 @@ import storageAPI from './modules/storageAPI';
 import galleryElementTpl from '../templates/galleryElement.hbs';
 import modalMovieCardAPI from './modules/modalMovieCardAPI';
 import footerModal from './modules/footerModal';
+import fetchAPI from './modules/fetchAPI';
 
 export const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.signOutBtnEl);
 export const currentAppState = {
@@ -20,6 +21,7 @@ export const currentAppState = {
   watched: { currentPage: 1, totalPages: null },
   queued: { currentPage: 1, totalPages: null },
 };
+const fetchAPIinstance = new fetchAPI();
 
 const noImageUrl = new URL('../images/elementBackup/imageNotAvailable.jpg', import.meta.url);
 // let galleryState = 'popular';
@@ -33,9 +35,16 @@ const getOneMovieInfo = movieInfo => {
   const genres = movieInfo?.genre_ids
     ? movieInfo.genre_ids.map(genreId => genresList[genreId]).join(', ')
     : '';
-  const year = movieInfo?.release_date.slice(0, 4);
+  let year = '';
+  if (movieInfo?.release_date) {
+    year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
+  }
+  let vote_average = 0;
+  if (movieInfo?.vote_average) {
+    vote_average = movieInfo.vote_average.toFixed(2);
+  }
   const noImage = noImageUrl.pathname;
-  return { title, posterUrl, genres, year, id, noImage };
+  return { title, posterUrl, genres, year, id, noImage, vote_average };
 };
 
 const prepareMoviesInfo = moviesArr => {
@@ -50,7 +59,10 @@ const prepareModalCardInfo = movieInfo => {
   const genres = movieInfo?.genres.map(genre => genre.name).join(', ') || '';
   const original_title = movieInfo?.original_title || 'No Title';
   const overview = movieInfo?.overview || 'No overview';
-  const year = movieInfo?.release_date.slice(0, 4) || 'No date';
+  let year = '';
+  if (movieInfo?.release_date) {
+    year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
+  }
   const noImage = noImageUrl.pathname;
   let posterUrl = '';
   if (movieInfo?.poster_path) {
@@ -74,9 +86,11 @@ const prepareModalCardInfo = movieInfo => {
 };
 
 const showPopular = async () => {
+  storageAPI.save('filters', []);
+  refsMdl.filtersFormEl.reset();
   currentAppState.galleryState = 'popular';
   try {
-    const response = await fetchAPI.fetchPopular(currentAppState.popular.currentPage);
+    const response = await fetchAPIinstance.fetchPopular(currentAppState.popular.currentPage);
     currentAppState.popular.totalPages = response.total_pages;
     console.log('Popular movies server response', response);
     const processedInfo = prepareMoviesInfo(response.results);
@@ -99,7 +113,7 @@ const showPopular = async () => {
       showPopular();
     });
   } catch (error) {
-    console.log('1');
+    console.log(error);
     Notify.failure(error.message);
   }
 };
@@ -122,6 +136,7 @@ const handleHomeBtnClick = async e => {
   refsMdl.searchFormEl.classList.remove('is-hidden');
   refsMdl.watchedBtnEl.classList.add('is-hidden');
   refsMdl.queuedBtnEl.classList.add('is-hidden');
+  refsMdl.filtersFormEl.classList.remove('is-hidden');
   uiAPI.hideRegistrationInfo();
   currentAppState.popular.currentPage = 1;
   showPopular();
@@ -129,13 +144,13 @@ const handleHomeBtnClick = async e => {
 
 const showSearch = async () => {
   try {
-    const response = await fetchAPI.fetchSearch(
+    const response = await fetchAPIinstance.fetchSearch(
       currentAppState.searchQuery,
       currentAppState.search.currentPage
     );
     console.log(response);
     if (!response.results.length) {
-      Notify.failure('Нет таких фильмов :)');
+      Notify.failure('Немає таких фільмів :)');
       return;
     }
     const processedInfo = prepareMoviesInfo(response.results);
@@ -160,7 +175,7 @@ const showSearch = async () => {
       showSearch();
     });
   } catch (error) {
-    console.log('2');
+    console.log(error);
     Notify.failure(error.message);
   }
 };
@@ -186,6 +201,7 @@ const handleLybraryBtnClick = async e => {
   refsMdl.searchFormEl.classList.add('is-hidden');
   refsMdl.watchedBtnEl.classList.remove('is-hidden');
   refsMdl.queuedBtnEl.classList.remove('is-hidden');
+  refsMdl.filtersFormEl.classList.add('is-hidden');
   const watched = storageAPI.load('watched') || [];
   refsMdl.galleryEl.innerHTML = galleryElementTpl(watched);
 };
@@ -213,19 +229,91 @@ const handleGalleryClick = async e => {
   if (!card) return;
   const id = +card.dataset.id;
   try {
-    const response = await fetchAPI.fetchId(id);
+    const response = await fetchAPIinstance.fetchId(id);
     console.log('Full movie info', response);
     const processedInfo = prepareModalCardInfo(response);
 
     storageAPI.save('modalInfo', processedInfo);
     modalMovieCardAPI.showModalMovieCard(processedInfo);
   } catch (error) {
-    console.log('3');
+    console.log(error);
     Notify.failure(error.message);
   }
 };
 
+async function handleFilterFormChange({ target }) {
+  // console.dir(target);
+  const form = target.closest('.js-filters-form');
+  let filters = [];
+  console.dir(form);
+  for (let i = 0; i < form.elements.length; i += 1) {
+    if (form[i].name && form[i].value) {
+      filters.push({ [form[i].name]: form[i].value });
+    }
+  }
+  storageAPI.save('filters', filters);
+  try {
+    const response = await fetchAPIinstance.fetchFiltered();
+    console.log(response);
+    if (!response.results.length) {
+      Notify.failure('Немає таких фільмів :)');
+      return;
+    }
+    const processedInfo = prepareMoviesInfo(response.results);
+    console.log(processedInfo);
+    // firebaseInstance.addToWatched(processedInfo[0]);
+    uiAPI.renderGallery(processedInfo);
+    refsMdl.paginationEl.classList.remove('is-hidden');
+    const pagination = new Pagination(refsMdl.paginationEl, {
+      totalItems: response.total_results,
+      itemsPerPage: 20,
+      visiblePages: 10,
+      centerAlign: true,
+      page: currentAppState.search.currentPage,
+    });
+    pagination.on('beforeMove', function (eventData) {
+      window.scroll({
+        top: 0,
+        behavior: 'smooth',
+      });
+      showFiltered(eventData.page);
+    });
+  } catch (error) {
+    console.log(error);
+    Notify.failure(error.message);
+  }
+}
+
+async function showFiltered(page) {
+  try {
+    const response = await fetchAPIinstance.fetchFiltered(page);
+    console.log(response);
+    if (!response.results.length) {
+      Notify.failure('Немає таких фільмів :)');
+      return;
+    }
+    const processedInfo = prepareMoviesInfo(response.results);
+    console.log(processedInfo);
+    // firebaseInstance.addToWatched(processedInfo[0]);
+    uiAPI.renderGallery(processedInfo);
+  } catch (error) {
+    console.log(error);
+    Notify.failure(error.message);
+  }
+}
 // const handleTeamDescrClick = () => {};
+
+function handleFiltersResetBtnClick() {
+  storageAPI.save('filters', []);
+  showPopular();
+}
+
+function handleUpBtnClick() {
+  window.scroll({
+    top: 0,
+    behavior: 'smooth',
+  });
+}
 
 refsMdl.logoEl.addEventListener('click', handleLogoBtnClick);
 refsMdl.homeBtnEl.addEventListener('click', handleHomeBtnClick);
@@ -236,13 +324,39 @@ refsMdl.lybraryBtnEl.addEventListener('click', handleLybraryBtnClick);
 
 refsMdl.watchedBtnEl.addEventListener('click', handleWatchedBtnClick);
 refsMdl.queuedBtnEl.addEventListener('click', handleQueuedBtnClick);
+refsMdl.upBtnEl.addEventListener('click', handleUpBtnClick);
 
 // refsMdl.paginationEl.addEventListener('click', handlePaginationClick);
 
 refsMdl.galleryEl.addEventListener('click', handleGalleryClick);
 
+refsMdl.filtersFormEl.addEventListener('change', handleFilterFormChange);
+refsMdl.filtersResetBtnEl.addEventListener('click', showPopular);
+refsMdl.themeSwitchFormEl.addEventListener('change', e => {
+  const isDark = e.target.checked;
+  if (isDark) {
+    refsMdl.body.style.backgroundColor = 'rgb(44, 43, 43)';
+    refsMdl.themeNameEl.textContent = 'Темна тема';
+  } else {
+    refsMdl.body.style.backgroundColor = 'transparent';
+    refsMdl.themeNameEl.textContent = 'Світла тема';
+  }
+});
+
+function upButton() {
+  window.onscroll = function () {
+    if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+      refsMdl.upBtnEl.classList.add('up-button--visible');
+    } else {
+      refsMdl.upBtnEl.classList.remove('up-button--visible');
+    }
+  };
+}
+
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
 currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 showPopular();
+upButton();
+storageAPI.save('filters', []);
 
 footerModal();

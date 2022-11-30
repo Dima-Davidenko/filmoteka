@@ -18,6 +18,7 @@
 
 .gallery__item {
   cursor: pointer;
+  position: relative;
   @media screen and (max-width: 767px) {
     max-width: 280px;
     margin: 0 auto;
@@ -60,6 +61,21 @@
   @media screen and (min-width: 1280px) {
     height: 587px;
   }
+}
+
+.item__vote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 30px;
+  background-color: rgba(255, 6, 6, 0.661);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: rgb(245, 211, 211);
+  font-size: 20px;
+  border-radius: 5px;
 }
 
 .item__title {
@@ -147,12 +163,12 @@
 }
 
 .loading__box {
+  height: fit-content;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: 20px;
   @media screen and (min-width: 768px) {
     height: 60px;
   }
