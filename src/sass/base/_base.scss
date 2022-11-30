@@ -5,6 +5,7 @@ body {
   line-height: 1.2;
   font-weight: 500;
   color: $main-black-clr;
+  overflow-y: scroll;
 }
 ul {
   padding: 0;
@@ -44,4 +45,21 @@ img {
   overflow: hidden;
   white-space: nowrap;
   border: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(99, 4, 4);
+  border-radius: 5px;
 }
