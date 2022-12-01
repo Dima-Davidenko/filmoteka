@@ -17,7 +17,7 @@ class fetchAPI {
       ['vote_count.gte']: 10,
     };
   }
-  async fetchPopular(page) {
+  async fetchPopular(page = 1) {
     uiAPI.showLoadingInfo();
     const { data } = await this.axiosTMDB.get('trending/movie/week', {
       params: { page, language: 'uk' },

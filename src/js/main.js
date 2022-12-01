@@ -16,41 +16,76 @@ export const currentAppState = {
   searchQuery: '',
   popular: { currentPage: 1 },
   search: { currentPage: 1 },
+  filtered: { currentPage: 1 },
 };
 
 let pagination = null;
 
-const showPopular = async () => {
+const paginationOptions = {
+  itemsPerPage: 20,
+  visiblePages: 5,
+  centerAlign: true,
+};
+
+const messageFailure = 'Щось пішло не так, але посіпаки вже розбираються з цим...';
+
+const showPagination = totalPages => {
+  const currentPage = currentAppState[currentAppState.galleryState].currentPage;
+  refsMdl.paginationEl.classList.remove('is-hidden');
+  pagination = new Pagination(refsMdl.paginationEl, {
+    ...paginationOptions,
+    totalItems: totalPages,
+    page: currentPage,
+  });
+  pagination.on('beforeMove', function (eventData) {
+    currentAppState[currentAppState.galleryState].currentPage = eventData.page;
+    window.scroll({
+      top: 0,
+      behavior: 'smooth',
+    });
+    switch (currentAppState.galleryState) {
+      case 'popular':
+        showPopular();
+        break;
+      case 'search':
+        showSearch();
+        break;
+      case 'filtered':
+        showFiltered();
+        break;
+    }
+  });
+};
+
+async function showFiltered() {
+  currentAppState.galleryState = 'filtered';
+  try {
+    const response = await fetchAPI.instance.fetchFiltered(currentAppState.filtered.currentPage);
+    // console.log('Popular movies server response', response);
+    const processedInfo = respDataProc.prepareMoviesInfo(response.results);
+    uiAPI.renderGallery(processedInfo);
+    showPagination(response.total_results);
+  } catch (error) {
+    // console.log(error);
+    Notify.failure(messageFailure);
+  }
+}
+
+async function showPopular() {
   storageAPI.save('filters', []);
   refsMdl.filtersFormEl.reset();
   currentAppState.galleryState = 'popular';
   try {
     const response = await fetchAPI.instance.fetchPopular(currentAppState.popular.currentPage);
-    console.log('Popular movies server response', response);
+    // console.log('Popular movies server response', response);
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
     uiAPI.renderGallery(processedInfo);
-    refsMdl.paginationEl.classList.remove('is-hidden');
-    pagination = new Pagination(refsMdl.paginationEl, {
-      totalItems: response.total_results,
-      itemsPerPage: 20,
-      visiblePages: 5,
-      centerAlign: true,
-      page: currentAppState.popular.currentPage,
-    });
-    pagination.on('beforeMove', function (eventData) {
-      currentAppState.popular.currentPage = eventData.page;
-      console.log('scroll');
-      window.scroll({
-        top: 0,
-        behavior: 'smooth',
-      });
-      showPopular();
-    });
+    showPagination(response.total_results, currentAppState.popular.currentPage);
   } catch (error) {
-    console.log(error);
-    Notify.failure(error.message);
+    // console.log(error);
+    Notify.failure(messageFailure);
   }
-};
+}
 
 function setActiveButton(button) {
   const activeBtn = document.querySelector('.current');
@@ -77,6 +112,7 @@ const handleHomeBtnClick = async e => {
 };
 
 const showSearch = async () => {
+  currentAppState.galleryState = 'search';
   try {
     const response = await fetchAPI.instance.fetchSearch(
       currentAppState.searchQuery,
@@ -90,36 +126,18 @@ const showSearch = async () => {
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
     console.log(processedInfo);
     uiAPI.renderGallery(processedInfo);
-    refsMdl.paginationEl.classList.remove('is-hidden');
-    const pagination = new Pagination(refsMdl.paginationEl, {
-      totalItems: response.total_results,
-      itemsPerPage: 20,
-      visiblePages: 5,
-      centerAlign: true,
-      page: currentAppState.search.currentPage,
-    });
-    pagination.on('beforeMove', function (eventData) {
-      currentAppState.search.currentPage = eventData.page;
-      console.log('scroll');
-      window.scroll({
-        top: 0,
-        behavior: 'smooth',
-      });
-      showSearch();
-    });
+    showPagination(response.total_results, currentAppState.popular.currentPage);
   } catch (error) {
-    console.log(error);
-    Notify.failure(error.message);
+    // console.log(error);
+    Notify.failure(messageFailure);
   }
 };
 
 const handleFormSubmit = async event => {
-  currentAppState.galleryState = 'search';
   event.preventDefault();
   currentAppState.searchQuery = event.target.elements.searchQuery.value.trim();
   if (!currentAppState.searchQuery) return;
   currentAppState.search.currentPage = 1;
-  currentAppState.galleryState = 'search';
   showSearch();
 };
 
@@ -161,73 +179,61 @@ const handleGalleryClick = async e => {
   const id = +card.dataset.id;
   try {
     const response = await fetchAPI.instance.fetchId(id);
-    console.log('Full movie info', response);
+    // console.log('Full movie info', response);
     const processedInfo = respDataProc.prepareModalCardInfo(response);
 
     storageAPI.save('modalInfo', processedInfo);
     modalMovieCardAPI.showModalMovieCard(processedInfo);
   } catch (error) {
-    console.log(error);
-    Notify.failure(error.message);
+    // console.log(error);
+    Notify.failure(messageFailure);
   }
 };
 
-async function handleFilterFormChange({ target }) {
-  const form = target.closest('.js-filters-form');
+async function handleFilterFormChange(e) {
+  e.preventDefault();
+  refsMdl.searchInputEl.value = '';
+  const form = e.target.closest('.js-filters-form');
   let filters = [];
-  console.dir(form);
   for (let i = 0; i < form.elements.length; i += 1) {
     if (form[i].name && form[i].value) {
       filters.push({ [form[i].name]: form[i].value });
     }
   }
   storageAPI.save('filters', filters);
+  currentAppState.galleryState = 'filtered';
   try {
     const response = await fetchAPI.instance.fetchFiltered();
-    console.log(response);
+    // console.log(response);
     if (!response.results.length) {
-      Notify.failure('Немає таких фільмів :)');
+      Notify.failure('І тут щось пішло не так, але посіпаки вже розбираються з цим :)');
       return;
     }
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
-    console.log(processedInfo);
-    // instance.addToWatched(processedInfo[0]);
+    // console.log(processedInfo);
     uiAPI.renderGallery(processedInfo);
-    refsMdl.paginationEl.classList.remove('is-hidden');
-    pagination = new Pagination(refsMdl.paginationEl, {
-      totalItems: response.total_results,
-      itemsPerPage: 20,
-      visiblePages: 5,
-      centerAlign: true,
-      page: currentAppState.search.currentPage,
-    });
-    pagination.on('beforeMove', function (eventData) {
-      window.scroll({
-        top: 0,
-        behavior: 'smooth',
-      });
-      showFiltered(eventData.page);
-    });
+    currentAppState.filtered.currentPage = 1;
+    showPagination(response.total_results, currentAppState.filtered.currentPage);
   } catch (error) {
-    console.log(error);
-    Notify.failure(error.message);
+    // console.log(error);
+    Notify.failure(messageFailure);
   }
 }
 
-async function showFiltered(page) {
+async function showFiltered() {
   try {
-    const response = await fetchAPI.instance.fetchFiltered(page);
-    console.log(response);
+    const response = await fetchAPI.instance.fetchFiltered(currentAppState.filtered.currentPage);
+    // console.log(response);
     if (!response.results.length) {
       Notify.failure('Немає таких фільмів :)');
       return;
     }
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
-    console.log(processedInfo);
+    // console.log(processedInfo);
     uiAPI.renderGallery(processedInfo);
   } catch (error) {
-    console.log(error);
-    Notify.failure(error.message);
+    // console.log(error);
+    Notify.failure(messageFailure);
   }
 }
 
