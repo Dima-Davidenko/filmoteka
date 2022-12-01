@@ -1,5 +1,5 @@
 import * as basicLightbox from 'basiclightbox';
-import { firebaseInstance } from '../main';
+import firebaseAPI from '../main';
 
 import lybraryAPI from './lybraryAPI';
 import storageAPI from './storageAPI';
@@ -16,10 +16,10 @@ async function showModalMovieCard(movieInfo) {
   let isWatched;
   let isQueued;
 
-  if (firebaseInstance.userId) {
+  if (firebaseAPI.instance.userId) {
     try {
-      isWatched = await firebaseInstance.isInLyb(movieInfo.id, 'watched');
-      isQueued = await firebaseInstance.isInLyb(movieInfo.id, 'queue');
+      isWatched = await firebaseAPI.instance.isInLyb(movieInfo.id, 'watched');
+      isQueued = await firebaseAPI.instance.isInLyb(movieInfo.id, 'queue');
     } catch (error) {
       console.log(error);
     }

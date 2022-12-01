@@ -17,7 +17,7 @@ import storageAPI from './storageAPI';
 import modalMovieCardAPI from './modalMovieCardAPI';
 import { uiAPI } from './uiAPI';
 
-export default class firebaseAPI {
+class firebaseAPI {
   constructor(signInBtnEl, logOutBtnEl) {
     this.firebaseConfig = JSON.parse(FIREBASE_CONFIG);
     this.firebaseApp = initializeApp(this.firebaseConfig);
@@ -254,3 +254,9 @@ export default class firebaseAPI {
     remove(ref(this.database, `users/${this.userId}/watched/${movieId}`));
   }
 }
+
+const instance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.signOutBtnEl);
+
+export default {
+  instance,
+};

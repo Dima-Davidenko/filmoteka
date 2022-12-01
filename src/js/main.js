@@ -5,14 +5,15 @@ import fetchAPIclass from './modules/fetchAPI';
 import storageAPI from './modules/storageAPI';
 import { genresList } from './utils/genresList';
 import { uiAPI } from './modules/uiAPI';
-import firebaseAPI from './modules/firebaseAPI';
 import storageAPI from './modules/storageAPI';
 import galleryElementTpl from '../templates/galleryElement.hbs';
 import modalMovieCardAPI from './modules/modalMovieCardAPI';
 import footerModal from './modules/footerModal';
 import fetchAPI from './modules/fetchAPI';
+import noImageUrl from '../images/elementBackup/imageNotAvailable.jpg';
+import firebaseAPI from './modules/firebaseAPI';
 
-export const firebaseInstance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.signOutBtnEl);
+// export const instance = new firebaseAPI(refsMdl.signInBtnEl, refsMdl.signOutBtnEl);
 export const currentAppState = {
   galleryState: 'popular',
   searchQuery: '',
@@ -23,7 +24,7 @@ export const currentAppState = {
 };
 const fetchAPIinstance = new fetchAPI();
 
-const noImageUrl = new URL('../images/elementBackup/imageNotAvailable.jpg', import.meta.url);
+// const noImageUrl = new URL('../images/elementBackup/imageNotAvailable.jpg', import.meta.url);
 // let galleryState = 'popular';
 
 const getOneMovieInfo = movieInfo => {
@@ -43,7 +44,7 @@ const getOneMovieInfo = movieInfo => {
   if (movieInfo?.vote_average) {
     vote_average = movieInfo.vote_average.toFixed(2);
   }
-  const noImage = noImageUrl.pathname;
+  const noImage = noImageUrl;
   return { title, posterUrl, genres, year, id, noImage, vote_average };
 };
 
@@ -155,7 +156,7 @@ const showSearch = async () => {
     }
     const processedInfo = prepareMoviesInfo(response.results);
     console.log(processedInfo);
-    // firebaseInstance.addToWatched(processedInfo[0]);
+    // instance.addToWatched(processedInfo[0]);
     uiAPI.renderGallery(processedInfo);
     refsMdl.paginationEl.classList.remove('is-hidden');
     const pagination = new Pagination(refsMdl.paginationEl, {
@@ -193,7 +194,7 @@ const handleFormSubmit = async event => {
 const handleLybraryBtnClick = async e => {
   refsMdl.paginationEl.classList.add('is-hidden');
   refsMdl.header.classList.add('header--lybrary');
-  if (!firebaseInstance.userId) uiAPI.showRegistrationInfo();
+  if (!firebaseAPI.instance.userId) uiAPI.showRegistrationInfo();
   setActiveButton(e.target);
   currentAppState.galleryState = 'watched';
   refsMdl.watchedBtnEl.classList.add('active');
@@ -259,7 +260,7 @@ async function handleFilterFormChange({ target }) {
     }
     const processedInfo = prepareMoviesInfo(response.results);
     console.log(processedInfo);
-    // firebaseInstance.addToWatched(processedInfo[0]);
+    // instance.addToWatched(processedInfo[0]);
     uiAPI.renderGallery(processedInfo);
     refsMdl.paginationEl.classList.remove('is-hidden');
     const pagination = new Pagination(refsMdl.paginationEl, {
@@ -292,7 +293,7 @@ async function showFiltered(page) {
     }
     const processedInfo = prepareMoviesInfo(response.results);
     console.log(processedInfo);
-    // firebaseInstance.addToWatched(processedInfo[0]);
+    // instance.addToWatched(processedInfo[0]);
     uiAPI.renderGallery(processedInfo);
   } catch (error) {
     console.log(error);
