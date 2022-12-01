@@ -1,12 +1,21 @@
 import { genresList } from '../utils/genresList';
 import noImageUrl from '../../images/elementBackup/imageNotAvailable.jpg';
+import korean from '../../images/elementBackup/korean.jpg';
 
 const getOneMovieInfo = movieInfo => {
   const id = movieInfo?.id;
   const title = movieInfo?.title;
-  const posterUrl = movieInfo?.poster_path
+  let posterUrl = movieInfo?.poster_path
     ? `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`
     : null;
+
+  if (
+    movieInfo?.vote_count < 10 &&
+    (movieInfo?.original_title.charCodeAt(0) > 12000 ||
+      movieInfo?.original_title.charCodeAt(movieInfo?.original_title.length - 1) > 12000)
+  ) {
+    posterUrl = `${korean}`;
+  }
   const genres = movieInfo?.genre_ids
     ? movieInfo.genre_ids.map(genreId => genresList[genreId]).join(', ')
     : '';
