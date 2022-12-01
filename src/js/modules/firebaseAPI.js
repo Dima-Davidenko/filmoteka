@@ -213,7 +213,8 @@ class firebaseAPI {
   }
 
   async addToLyb(id, type, movieInfo) {
-    console.log(`Movie is added to ${type}`, movieInfo);
+    console.log(`Movie is added to ${type}`);
+    console.dir(movieInfo);
     set(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`), {
       id: movieInfo.id || null,
       title: movieInfo.title || null,

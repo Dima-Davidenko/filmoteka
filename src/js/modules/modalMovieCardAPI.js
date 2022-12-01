@@ -1,11 +1,9 @@
 import * as basicLightbox from 'basiclightbox';
-import firebaseAPI from '../main';
-
 import lybraryAPI from './lybraryAPI';
 import storageAPI from './storageAPI';
 import refsMdl from './refsMdl';
-import fetchAPI from './fetchAPI';
 import { currentAppState } from '../main';
+import firebaseAPI from './firebaseAPI';
 
 // import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import modalMovieCardTpl from '../../templates/modal.hbs';

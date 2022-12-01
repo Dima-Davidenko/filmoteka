@@ -1,5 +1,5 @@
 import storageAPI from './storageAPI';
-import firebaseAPI from '../main';
+import firebaseAPI from './firebaseAPI';
 import modalMovieCard from './modalMovieCardAPI';
 
 function lybBtnClickAction(e) {
