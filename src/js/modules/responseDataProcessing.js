@@ -28,20 +28,37 @@ const prepareMoviesInfo = moviesArr => {
 
 const prepareModalCardInfo = movieInfo => {
   const id = movieInfo.id;
-  const title = movieInfo?.title || 'No Title';
+  let title = 'No Title';
+  if (movieInfo?.title) {
+    title = movieInfo.title;
+  } else if (movieInfo.en?.title) {
+    title = movieInfo.en.title;
+  }
   const vote_average = movieInfo?.vote_average ? movieInfo.vote_average.toFixed(2) : '0';
   const vote_count = movieInfo?.vote_count || 'No Votes';
   const popularity = movieInfo?.popularity || 'No Rates';
   const genres = movieInfo?.genres.map(genre => genre.name).join(', ') || '';
-  const original_title = movieInfo?.original_title || 'No Title';
-  const overview = movieInfo?.overview || 'No overview';
+  let original_title = 'No Title';
+  if (movieInfo?.original_title) {
+    original_title = movieInfo.original_title;
+  } else if (movieInfo.en?.original_title) {
+    original_title = movieInfo.en.original_title;
+  }
+  let overview = 'No overview';
+  if (movieInfo?.overview) {
+    overview = movieInfo.overview;
+  } else if (movieInfo.en?.overview) {
+    overview = movieInfo.en.overview;
+  }
   let year = '';
   if (movieInfo?.release_date) {
     year = movieInfo.release_date?.length ? movieInfo?.release_date.slice(0, 4) : '';
   }
-  const noImage = noImageUrl.pathname;
+  const noImage = noImageUrl;
   let posterUrl = '';
   if (movieInfo?.poster_path) {
+    posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
+  } else if (movieInfo.en?.poster_path) {
     posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
   }
   const video = movieInfo?.videos?.length ? movieInfo.videos[0].key : null;

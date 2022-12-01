@@ -14,23 +14,23 @@ import respDataProc from './modules/responseDataProcessing';
 export const currentAppState = {
   galleryState: 'popular',
   searchQuery: '',
-  popular: { currentPage: 1, totalPages: null },
-  search: { currentPage: 1, totalPages: null },
+  popular: { currentPage: 1 },
+  search: { currentPage: 1 },
 };
-const fetchAPIinstance = new fetchAPI();
+
+let pagination = null;
 
 const showPopular = async () => {
   storageAPI.save('filters', []);
   refsMdl.filtersFormEl.reset();
   currentAppState.galleryState = 'popular';
   try {
-    const response = await fetchAPIinstance.fetchPopular(currentAppState.popular.currentPage);
-    currentAppState.popular.totalPages = response.total_pages;
+    const response = await fetchAPI.instance.fetchPopular(currentAppState.popular.currentPage);
     console.log('Popular movies server response', response);
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
     uiAPI.renderGallery(processedInfo);
     refsMdl.paginationEl.classList.remove('is-hidden');
-    const pagination = new Pagination(refsMdl.paginationEl, {
+    pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
       visiblePages: 5,
@@ -78,7 +78,7 @@ const handleHomeBtnClick = async e => {
 
 const showSearch = async () => {
   try {
-    const response = await fetchAPIinstance.fetchSearch(
+    const response = await fetchAPI.instance.fetchSearch(
       currentAppState.searchQuery,
       currentAppState.search.currentPage
     );
@@ -160,7 +160,7 @@ const handleGalleryClick = async e => {
   if (!card) return;
   const id = +card.dataset.id;
   try {
-    const response = await fetchAPIinstance.fetchId(id);
+    const response = await fetchAPI.instance.fetchId(id);
     console.log('Full movie info', response);
     const processedInfo = respDataProc.prepareModalCardInfo(response);
 
@@ -183,7 +183,7 @@ async function handleFilterFormChange({ target }) {
   }
   storageAPI.save('filters', filters);
   try {
-    const response = await fetchAPIinstance.fetchFiltered();
+    const response = await fetchAPI.instance.fetchFiltered();
     console.log(response);
     if (!response.results.length) {
       Notify.failure('Немає таких фільмів :)');
@@ -194,7 +194,7 @@ async function handleFilterFormChange({ target }) {
     // instance.addToWatched(processedInfo[0]);
     uiAPI.renderGallery(processedInfo);
     refsMdl.paginationEl.classList.remove('is-hidden');
-    const pagination = new Pagination(refsMdl.paginationEl, {
+    pagination = new Pagination(refsMdl.paginationEl, {
       totalItems: response.total_results,
       itemsPerPage: 20,
       visiblePages: 5,
@@ -216,7 +216,7 @@ async function handleFilterFormChange({ target }) {
 
 async function showFiltered(page) {
   try {
-    const response = await fetchAPIinstance.fetchFiltered(page);
+    const response = await fetchAPI.instance.fetchFiltered(page);
     console.log(response);
     if (!response.results.length) {
       Notify.failure('Немає таких фільмів :)');

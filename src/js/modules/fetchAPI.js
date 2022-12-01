@@ -3,7 +3,7 @@ import { TMDB_KEY } from '../utils/envConsts';
 import storageAPI from './storageAPI';
 import { uiAPI } from './uiAPI';
 
-export default class fetchAPI {
+class fetchAPI {
   constructor() {
     this.axiosTMDB = axios.create({
       baseURL: 'https://api.themoviedb.org/3/',
@@ -31,19 +31,24 @@ export default class fetchAPI {
       this.axiosTMDB.get(`movie/${movie_id}`, {
         params: { language: 'uk' },
       }),
+      this.axiosTMDB.get(`movie/${movie_id}`, {
+        params: { language: 'en' },
+      }),
       this.axiosTMDB.get(`movie/${movie_id}/videos`, {
         params: { language: 'en' },
       }),
     ];
     const arrResponse = await Promise.all(arrFetch);
     const { data } = arrResponse[0];
-    data.videos = arrResponse[1].data?.results;
+    data.en = arrResponse[1].data;
+    data.videos = arrResponse[2].data?.results;
     uiAPI.hideLoadingInfo();
     return data;
   }
 
   async fetchSearch(query = '', page = 1) {
     uiAPI.showLoadingInfo();
+
     const { data } = await this.axiosTMDB.get('search/movie', {
       params: { page, query, language: 'uk' },
     });
@@ -69,49 +74,8 @@ export default class fetchAPI {
   }
 }
 
-// const axiosTMDB = axios.create({
-//   baseURL: 'https://api.themoviedb.org/3/',
-//   params: {
-//     api_key: TMDB_KEY,
-//   },
-// });
+const instance = new fetchAPI();
 
-// const fetchPopular = async page => {
-//   uiAPI.showLoadingInfo();
-//   const { data } = await axiosTMDB.get('trending/movie/week', {
-//     params: { page, language: 'uk', adult: false },
-//   });
-//   uiAPI.hideLoadingInfo();
-//   return data;
-// };
-
-// const fetchId = async movie_id => {
-//   uiAPI.showLoadingInfo();
-//   const arrFetch = [
-//     axiosTMDB.get(`movie/${movie_id}`, {
-//       params: { language: 'uk' },
-//     }),
-//     axiosTMDB.get(`movie/${movie_id}/videos`, {
-//       params: { language: 'en' },
-//     }),
-//   ];
-//   const arrResponse = await Promise.all(arrFetch);
-//   const { data } = arrResponse[0];
-//   data.videos = arrResponse[1].data?.results;
-//   uiAPI.hideLoadingInfo();
-//   return data;
-// };
-// const fetchSearch = async (query, page) => {
-//   uiAPI.showLoadingInfo();
-//   const { data } = await axiosTMDB.get('search/movie', {
-//     params: { page, query, language: 'uk', include_adult: false },
-//   });
-//   uiAPI.hideLoadingInfo();
-//   return data;
-// };
-
-// export default {
-//   fetchPopular,
-//   fetchSearch,
-//   fetchId,
-// };
+export default {
+  instance,
+};
