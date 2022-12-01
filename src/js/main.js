@@ -1,4 +1,5 @@
 import { Notify } from 'notiflix';
+import throttle from 'lodash.throttle';
 import Pagination from 'tui-pagination';
 import refsMdl from './modules/refsMdl';
 import storageAPI from './modules/storageAPI';
@@ -271,13 +272,16 @@ refsMdl.themeSwitchFormEl.addEventListener('change', e => {
 });
 
 function upButton() {
-  window.onscroll = function () {
-    if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
-      refsMdl.upBtnEl.classList.add('up-button--visible');
-    } else {
-      refsMdl.upBtnEl.classList.remove('up-button--visible');
-    }
-  };
+  window.addEventListener(
+    'scroll',
+    throttle(function () {
+      if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+        refsMdl.upBtnEl.classList.add('up-button--visible');
+      } else {
+        refsMdl.upBtnEl.classList.remove('up-button--visible');
+      }
+    }, 500)
+  );
 }
 
 // refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
