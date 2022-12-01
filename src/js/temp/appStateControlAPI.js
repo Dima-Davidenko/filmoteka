@@ -1,6 +1,6 @@
 import refsMdl from './refsMdl';
 import appStates from '../utils/appStates';
-import firebaseInstance from '../main';
+import firebaseAPI from '../main';
 
 let currentAppState = {
   galleryState: 'popular',
@@ -21,7 +21,7 @@ function activeElClick(element) {
       newAppState.showElems = { ...appStates.popularState };
       break;
   }
-  if (!firebaseInstance.userId) {
+  if (!firebaseAPI.instance.userId) {
     newAppState.showElems = { ...newAppState.showElems, ...appStates.unregisteredState };
   }
   showAppElems();
@@ -30,7 +30,7 @@ function activeElClick(element) {
 function pageReload() {
   newAppState.galleryState = 'popular';
   newAppState.showElems = { ...appStates.popularState };
-  if (!firebaseInstance.userId) {
+  if (!firebaseAPI.instance.userId) {
     newAppState.showElems = { ...newAppState.showElems, ...appStates.unregisteredState };
   }
   showAppElems();
