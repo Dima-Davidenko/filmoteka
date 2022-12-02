@@ -4,6 +4,7 @@ import storageAPI from './storageAPI';
 import refsMdl from './refsMdl';
 import { currentAppState } from '../main';
 import firebaseAPI from './firebaseAPI';
+import fetchAPI from './fetchAPI';
 
 // import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import modalMovieCardTpl from '../../templates/modal.hbs';
@@ -34,11 +35,11 @@ async function showModalMovieCard(movieInfo) {
   const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
   const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
-  if (!movieInfo.video) {
-    trailerBtn.classList.add('is-hidden');
-  } else {
-    trailerBtn.dataset.video = movieInfo.video;
-  }
+  // if (!movieInfo.video) {
+  // trailerBtn.classList.add('is-hidden');
+  // } else {
+  trailerBtn.dataset.video = movieInfo?.video ? movieInfo?.video : '';
+  // }
 
   if (isWatched) {
     watchBtn.textContent = 'Remove from watched';
@@ -79,21 +80,22 @@ async function showModalMovieCard(movieInfo) {
     });
     closeBtn.addEventListener('click', instance.close);
     instance.show();
-    // setTimeout(() => {
-    //   const backdrop = document.querySelector('.basicLightbox__placeholder');
-    //   const modal = document.querySelector('.modal-window');
-    //   // debugger;
-    //   if (modal.scrollHeight + 200 > document.documentElement.clientHeight) {
-    //     backdrop.style.paddingTop = Math.round(modal.clientHeight / 2.4) + 'px';
-    //   }
-    // }, 50);
   }
 }
 
-function trailerBtnClickAction(e) {
-  const id = e.target.dataset.video;
-
-  const markup = `<iframe src="https://www.youtube.com/embed/${id}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+async function trailerBtnClickAction(e) {
+  let src = e.target.dataset.video;
+  if (!src) {
+    const movieInfo = storageAPI.load('modalInfo');
+    const response = await fetchAPI.instanceYT.fetchYTSearch(
+      `movie ${movieInfo.original_title} ${movieInfo.year} trailer`
+    );
+    console.log(response);
+    src = `http://www.youtube.com/embed/${response.items[0].id.videoId}`;
+  } else {
+    src = `http://www.youtube.com/embed/${e.target.dataset.video}`;
+  }
+  const markup = `<iframe src="${src}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
   encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
 </iframe>`;
   const instance = basicLightbox.create(markup);

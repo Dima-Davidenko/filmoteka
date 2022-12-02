@@ -25,6 +25,7 @@ class firebaseAPI {
     this.providerGoogle = new GoogleAuthProvider();
     this.database = getDatabase(this.firebaseApp);
     this.userStatus = refsMdl.userStatusEl;
+    this.apiKey = this.firebaseConfig.apiKey;
     this.monitorAuthState();
     signInBtnEl.addEventListener('click', this.signInWithRedirectFirebase.bind(this));
     logOutBtnEl.addEventListener('click', this.logout.bind(this));
@@ -124,7 +125,7 @@ class firebaseAPI {
         refsMdl.signInBtnEl.classList.add('is-hidden');
         refsMdl.userStatusEl.textContent = `Hello, ${user.displayName}`;
         console.log('User info from monitor', user);
-
+        this.accessToken = user.accessToken;
         const watched = storageAPI.load('watched');
         if (watched) {
           watched.forEach(movie => {
@@ -213,8 +214,8 @@ class firebaseAPI {
   }
 
   async addToLyb(id, type, movieInfo) {
-    console.log(`Movie is added to ${type}`);
-    console.dir(movieInfo);
+    // console.log(`Movie is added to ${type}`);
+    // console.dir(movieInfo);
     set(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`), {
       id: movieInfo.id || null,
       title: movieInfo.title || null,
