@@ -90,8 +90,12 @@ async function trailerBtnClickAction(e) {
     const response = await fetchAPI.instanceYT.fetchYTSearch(
       `movie ${movieInfo.original_title} ${movieInfo.year} trailer`
     );
-    console.log(response);
-    src = `http://www.youtube.com/embed/${response.items[0].id.videoId}`;
+    if (response.items.length) {
+      src = `http://www.youtube.com/embed/${response.items[0].id.videoId}`;
+    } else {
+      trailerBtn.classList.add('is-hidden');
+      return;
+    }
   } else {
     src = `http://www.youtube.com/embed/${e.target.dataset.video}`;
   }

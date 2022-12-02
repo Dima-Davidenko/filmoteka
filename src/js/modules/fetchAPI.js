@@ -81,6 +81,7 @@ class fetchYT {
       baseURL: 'https://www.googleapis.com/youtube/v3/search',
       params: {
         part: 'snippet',
+        type: 'video',
       },
     });
   }
