@@ -85,15 +85,15 @@ async function showModalMovieCard(movieInfo) {
 
 async function trailerBtnClickAction(e) {
   let src = e.target.dataset.video;
-  if (!src) {
+  if (1) {
     const movieInfo = storageAPI.load('modalInfo');
     const response = await fetchAPI.instanceYT.fetchYTSearch(
-      `movie ${movieInfo.original_title} ${movieInfo.year} trailer`
+      `фільм ${movieInfo.title} ${movieInfo.year} трейлер українсьокю | movie ${movieInfo.original_title} ${movieInfo.year} official trailer`
     );
     if (response.items.length) {
       src = `http://www.youtube.com/embed/${response.items[0].id.videoId}`;
     } else {
-      trailerBtn.classList.add('is-hidden');
+      e.target.classList.add('is-hidden');
       return;
     }
   } else {
