@@ -91,13 +91,13 @@ async function trailerBtnClickAction(e) {
       `фільм ${movieInfo.title} ${movieInfo.year} трейлер українсьокю | movie ${movieInfo.original_title} ${movieInfo.year} official trailer`
     );
     if (response.items.length) {
-      src = `http://www.youtube.com/embed/${response.items[0].id.videoId}`;
+      src = `https://www.youtube.com/embed/${response.items[0].id.videoId}`;
     } else {
       e.target.classList.add('is-hidden');
       return;
     }
   } else {
-    src = `http://www.youtube.com/embed/${e.target.dataset.video}`;
+    src = `https://www.youtube.com/embed/${e.target.dataset.video}`;
   }
   const markup = `<iframe src="${src}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
   encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
