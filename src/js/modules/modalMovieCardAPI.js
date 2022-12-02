@@ -35,11 +35,11 @@ async function showModalMovieCard(movieInfo) {
   const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
   const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
-  // if (!movieInfo.video) {
-  // trailerBtn.classList.add('is-hidden');
-  // } else {
-  trailerBtn.dataset.video = movieInfo?.video ? movieInfo?.video : '';
-  // }
+  if (!movieInfo.video) {
+    trailerBtn.classList.add('is-hidden');
+  } else {
+    trailerBtn.dataset.video = movieInfo?.video ? movieInfo?.video : '';
+  }
 
   if (isWatched) {
     watchBtn.textContent = 'Remove from watched';
@@ -85,25 +85,33 @@ async function showModalMovieCard(movieInfo) {
 
 async function trailerBtnClickAction(e) {
   let src = e.target.dataset.video;
-  if (1) {
-    const movieInfo = storageAPI.load('modalInfo');
-    const response = await fetchAPI.instanceYT.fetchYTSearch(
-      `фільм ${movieInfo.title} ${movieInfo.year} трейлер українсьокю | movie ${movieInfo.original_title} ${movieInfo.year} official trailer`
-    );
-    if (response.items.length) {
-      src = `https://www.youtube.com/embed/${response.items[0].id.videoId}`;
-    } else {
-      e.target.classList.add('is-hidden');
-      return;
+  if (!src) {
+    try {
+      const movieInfo = storageAPI.load('modalInfo');
+      const response = await fetchAPI.instanceYT.fetchYTSearch(
+        `фільм ${movieInfo.title} ${movieInfo.year} трейлер українсьокю | movie ${movieInfo.original_title} ${movieInfo.year} official trailer`
+      );
+      if (response.items.length) {
+        src = `https://www.youtube.com/embed/${response.items[0].id.videoId}`;
+      } else {
+        e.target.classList.add('is-hidden');
+        return;
+      }
+    } catch (error) {
+      console.log(error);
     }
   } else {
     src = `https://www.youtube.com/embed/${e.target.dataset.video}`;
   }
-  const markup = `<iframe src="${src}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+  if (src) {
+    const markup = `<iframe src="${src}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
   encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
 </iframe>`;
-  const instance = basicLightbox.create(markup);
-  instance.show();
+    const instance = basicLightbox.create(markup);
+    instance.show();
+  } else {
+    e.target.classList.add('is-hidden');
+  }
 }
 
 function lybBtnClick(e) {
