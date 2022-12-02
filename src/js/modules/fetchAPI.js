@@ -2,8 +2,9 @@ import axios from 'axios';
 import { TMDB_KEY } from '../utils/envConsts';
 import storageAPI from './storageAPI';
 import { uiAPI } from './uiAPI';
+import firebaseAPI from './firebaseAPI';
 
-class fetchAPI {
+class fetchTMDBAPI {
   constructor() {
     this.axiosTMDB = axios.create({
       baseURL: 'https://api.themoviedb.org/3/',
@@ -74,8 +75,29 @@ class fetchAPI {
   }
 }
 
-const instance = new fetchAPI();
+class fetchYT {
+  constructor() {
+    this.axiosTMDB = axios.create({
+      baseURL: 'https://www.googleapis.com/youtube/v3/search',
+      params: {
+        part: 'snippet',
+        type: 'video',
+      },
+    });
+  }
+  async fetchYTSearch(q) {
+    const { data } = await this.axiosTMDB.get('', {
+      params: { q, key: firebaseAPI.instance.apiKey },
+      // headers: { Authorization: `Bearer ${firebaseAPI.instance.accessToken}` },
+    });
+    return data;
+  }
+}
+
+const instance = new fetchTMDBAPI();
+const instanceYT = new fetchYT();
 
 export default {
   instance,
+  instanceYT,
 };
