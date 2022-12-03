@@ -70,7 +70,18 @@ const prepareModalCardInfo = movieInfo => {
   } else if (movieInfo.en?.poster_path) {
     posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
   }
-  const video = movieInfo?.videos?.length ? movieInfo.videos[0].key : null;
+  let video = null;
+  if (movieInfo?.videos?.length) {
+    const officialTrailer = movieInfo.videos.find(
+      video => video.name.includes('Official') && video.name.includes('Trailer')
+    );
+    if (officialTrailer) {
+      video = officialTrailer.key;
+    } else {
+      video = movieInfo.videos[0].key;
+    }
+  }
+
   return {
     id,
     title,
