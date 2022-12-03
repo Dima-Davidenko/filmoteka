@@ -6,13 +6,22 @@
       <img class='item__image' src='{{noImage}}' alt='#' />
     {{/if}}
     <h2 class='item__title'>{{title}}</h2>
-    {{#if vote_average}}
-      <span class='item__vote'>{{vote_average}}</span>
-    {{/if}}
     <span class='item__category-js item__category'>
       {{genres}}
     </span>
     <span class='item__category'>| {{year}}</span>
+    <p class='gallery__overlay'>
+      {{#if original_language}}
+        Мова оригінала:
+        <span class='item__lang'>{{original_language}}</span>
+      {{/if}}
+      {{#if overview}}
+        {{overview}}
+      {{/if}}
+    </p>
+    {{#if vote_average}}
+      <span class='item__vote'>{{vote_average}}</span>
+    {{/if}}
   </li>
 {{/each}}
 

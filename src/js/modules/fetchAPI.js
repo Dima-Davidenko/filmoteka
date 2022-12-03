@@ -20,9 +20,17 @@ class fetchTMDBAPI {
   }
   async fetchPopular(page = 1) {
     uiAPI.showLoadingInfo();
-    const { data } = await this.axiosTMDB.get('trending/movie/week', {
-      params: { page, language: 'uk' },
-    });
+    const arrFetch = [
+      this.axiosTMDB.get('trending/movie/week', {
+        params: { page, language: 'uk' },
+      }),
+      this.axiosTMDB.get('trending/movie/week', {
+        params: { page, language: 'en' },
+      }),
+    ];
+    const arrResponse = await Promise.all(arrFetch);
+    const { data } = arrResponse[0];
+    data.en = arrResponse[1].data;
     uiAPI.hideLoadingInfo();
     return data;
   }
