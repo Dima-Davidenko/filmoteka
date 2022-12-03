@@ -1,4 +1,5 @@
 import { genresList } from '../utils/genresList';
+import { langCodes } from '../utils/langsList';
 import noImageUrl from '../../images/elementBackup/imageNotAvailable.jpg';
 import korean from '../../images/elementBackup/korean.jpg';
 
@@ -27,8 +28,18 @@ const getOneMovieInfo = movieInfo => {
   if (movieInfo?.vote_average) {
     vote_average = movieInfo.vote_average.toFixed(2);
   }
+  let overview = 'No overview';
+  if (movieInfo?.overview) {
+    overview = movieInfo.overview;
+  } else if (movieInfo.en?.overview) {
+    overview = movieInfo.en.overview;
+  }
+  let original_language = null;
+  if (movieInfo?.original_language) {
+    original_language = langCodes[movieInfo.original_language];
+  }
   const noImage = noImageUrl;
-  return { title, posterUrl, genres, year, id, noImage, vote_average };
+  return { title, posterUrl, genres, year, id, noImage, vote_average, overview, original_language };
 };
 
 const prepareMoviesInfo = moviesArr => {
@@ -72,14 +83,7 @@ const prepareModalCardInfo = movieInfo => {
   }
   let video = null;
   if (movieInfo?.videos?.length) {
-    const officialTrailer = movieInfo.videos.find(
-      video => video.name.includes('Official') && video.name.includes('Trailer')
-    );
-    if (officialTrailer) {
-      video = officialTrailer.key;
-    } else {
-      video = movieInfo.videos[0].key;
-    }
+    video = movieInfo.videos[movieInfo.videos.length - 1].key;
   }
 
   return {

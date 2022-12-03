@@ -186,7 +186,7 @@ const handleGalleryClick = async e => {
     storageAPI.save('modalInfo', processedInfo);
     modalMovieCardAPI.showModalMovieCard(processedInfo);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     Notify.failure(messageFailure);
   }
 };
@@ -284,8 +284,8 @@ function upButton() {
   );
 }
 
-// refsMdl.teamDescrEl.addEventListener('click', handleTeamDescrClick);
 currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
+// currentAppState.popular.currentPage = 414;
 showPopular();
 upButton();
 storageAPI.save('filters', []);

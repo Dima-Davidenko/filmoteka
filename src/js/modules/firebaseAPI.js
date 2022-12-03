@@ -118,8 +118,21 @@ class firebaseAPI {
           // Common errors could be invalid email and invalid or expired OTPs.
         });
     }
-    onAuthStateChanged(this.firebaseAuth, user => {
+    onAuthStateChanged(this.firebaseAuth, async user => {
       if (user) {
+        const YTStatus = await this.getYouTubeStatus();
+        const dateNow = new Date();
+        const savedDate = new Date(YTStatus.timeStamp);
+        if (
+          (YTStatus.status === false && savedDate.getUTCDate() > dateNow.getUTCDate()) ||
+          savedDate.getUTCMonth() > dateNow.getUTCMonth() ||
+          savedDate.getUTCFullYear() > dateNow.getUTCFullYear()
+        ) {
+          this.setYouTubeStatus(Date.now(), true);
+          storageAPI.save('YTStatus', { status: true, timeStamp: dateNow });
+        } else {
+          storageAPI.save('YTStatus', YTStatus);
+        }
         uiAPI.hideRegistrationInfo();
         this.userId = user.uid;
         refsMdl.signOutBtnEl.classList.remove('is-hidden');
@@ -141,11 +154,6 @@ class firebaseAPI {
           });
         }
 
-        // showApp();
-        // showLoginState(user);
-        // userId = user.uid;
-        // hideLoginError();
-        // hideLinkError();
         const userLybraryWatched = ref(this.database, `users/${this.userId}/lybrary/watched/`);
         onValue(userLybraryWatched, watched => {
           uiAPI.hideLoadingInfo();
@@ -173,6 +181,17 @@ class firebaseAPI {
           }
           console.log('Data Monitor ---> Data from queue DB have changed', data);
           modalMovieCardAPI.showLybrary('queue');
+        });
+        const YTStatusRef = ref(this.database, `appSettings/YTstatus`);
+        onValue(YTStatusRef, status => {
+          uiAPI.hideLoadingInfo();
+          const data = status.val();
+          if (data) {
+            this.writeDataToStorage('YTStatus', data);
+          } else {
+            this.writeDataToStorage('YTStatus', { status: true, timeStamp: Date.now() });
+          }
+          console.log('Data Monitor ---> Data from YTstatus DB have changed', data);
         });
       } else {
         refsMdl.signOutBtnEl.classList.add('is-hidden');
@@ -227,13 +246,13 @@ class firebaseAPI {
     }
   }
   async setYouTubeStatus(timeStamp, status) {
-    set(ref(this.database, 'appSettings/status'), {
+    set(ref(this.database, 'appSettings/YTstatus'), {
       status,
       timeStamp,
     });
   }
   async getYouTubeStatus() {
-    const snapshot = await get(child(this.dbRef, `appSettings/status`));
+    const snapshot = await get(child(this.dbRef, `appSettings/YTstatus`));
     return snapshot.val();
   }
 }
