@@ -72,14 +72,7 @@ const prepareModalCardInfo = movieInfo => {
   }
   let video = null;
   if (movieInfo?.videos?.length) {
-    const officialTrailer = movieInfo.videos.find(
-      video => video.name.includes('Official') && video.name.includes('Trailer')
-    );
-    if (officialTrailer) {
-      video = officialTrailer.key;
-    } else {
-      video = movieInfo.videos[0].key;
-    }
+    video = movieInfo.videos[movieInfo.videos.length - 1].key;
   }
 
   return {

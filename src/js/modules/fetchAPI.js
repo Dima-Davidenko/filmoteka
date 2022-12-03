@@ -61,12 +61,9 @@ class fetchTMDBAPI {
     const filters = storageAPI.load('filters');
     filters.forEach(filter => {
       const [filterName, filterValue] = Object.entries(filter)[0];
-      console.log(filterName);
-      console.log(filterValue);
       this.filterParams[filterName] = filterValue;
     });
     console.log(this.filterParams);
-    // console.log(filters);
     const { data } = await this.axiosTMDB.get('discover/movie', {
       params: { page, language: 'uk', ...this.filterParams },
     });
@@ -88,7 +85,6 @@ class fetchYT {
   async fetchYTSearch(q) {
     const { data } = await this.axiosTMDB.get('', {
       params: { q, key: firebaseAPI.instance.apiKey },
-      // headers: { Authorization: `Bearer ${firebaseAPI.instance.accessToken}` },
     });
     return data;
   }
