@@ -26,6 +26,7 @@ class firebaseAPI {
     this.database = getDatabase(this.firebaseApp);
     this.userStatus = refsMdl.userStatusEl;
     this.apiKey = this.firebaseConfig.apiKey;
+    this.dbRef = ref(this.database);
     this.monitorAuthState();
     signInBtnEl.addEventListener('click', this.signInWithRedirectFirebase.bind(this));
     logOutBtnEl.addEventListener('click', this.logout.bind(this));
@@ -196,8 +197,7 @@ class firebaseAPI {
   }
   async isInLyb(id, type) {
     try {
-      const dbRef = ref(this.database);
-      const snapshot = await get(child(dbRef, `users/${this.userId}/lybrary/${type}/${id}`));
+      const snapshot = await get(child(this.dbRef, `users/${this.userId}/lybrary/${type}/${id}`));
       if (snapshot.exists()) {
         return true;
       } else {
@@ -208,11 +208,6 @@ class firebaseAPI {
       return false;
     }
   }
-
-  async isInQueue(id) {
-    return ref((this.database, `users/${this.userId}/lybrary/queue/${id}`));
-  }
-
   async addToLyb(id, type, movieInfo) {
     // console.log(`Movie is added to ${type}`);
     // console.dir(movieInfo);
@@ -231,29 +226,15 @@ class firebaseAPI {
       console.log(`Fail to remove from DB ---> ${error}`);
     }
   }
-
-  async addToWatched(movieInfo) {
-    set(ref(this.database, `users/${this.userId}/lybrary/watched/${movieInfo.id}`), {
-      id: movieInfo.id,
-      title: movieInfo.title,
-      posterUrl: movieInfo.posterUrl,
-      genres: movieInfo.genres,
-      year: movieInfo.year,
+  async setYouTubeStatus(timeStamp, status) {
+    set(ref(this.database, 'appSettings/status'), {
+      status,
+      timeStamp,
     });
   }
-
-  async addToQueued(movieInfo) {
-    set(ref(this.database, `users/${this.userId}/lybrary/queued/${movieInfo.id}`), {
-      id: movieInfo.id,
-      title: movieInfo.title,
-      posterUrl: movieInfo.posterUrl,
-      genres: movieInfo.genres,
-      year: movieInfo.year,
-    });
-  }
-
-  async removeFromWatched(movieId) {
-    remove(ref(this.database, `users/${this.userId}/watched/${movieId}`));
+  async getYouTubeStatus() {
+    const snapshot = await get(child(this.dbRef, `appSettings/status`));
+    return snapshot.val();
   }
 }
 

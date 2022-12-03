@@ -5,6 +5,7 @@ import refsMdl from './refsMdl';
 import { currentAppState } from '../main';
 import firebaseAPI from './firebaseAPI';
 import fetchAPI from './fetchAPI';
+import { Notify } from 'notiflix';
 
 // import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import modalMovieCardTpl from '../../templates/modal.hbs';
@@ -36,7 +37,8 @@ async function showModalMovieCard(movieInfo) {
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
   const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
   if (!movieInfo.video) {
-    trailerBtn.classList.add('is-hidden');
+    // trailerBtn.classList.add('is-hidden');
+    trailerBtn.dataset.action = 'find';
   } else {
     trailerBtn.dataset.video = movieInfo?.video ? movieInfo?.video : '';
   }
@@ -84,39 +86,34 @@ async function showModalMovieCard(movieInfo) {
 }
 
 async function trailerBtnClickAction(e) {
-  let src = e.target.dataset.video;
-  if (!src) {
+  if (e.target.dataset.action === 'find') {
     try {
       const movieInfo = storageAPI.load('modalInfo');
       const response = await fetchAPI.instanceYT.fetchYTSearch(
         `фільм ${movieInfo.title} ${movieInfo.year} трейлер українсьокю | movie ${movieInfo.original_title} ${movieInfo.year} official trailer`
       );
-      if (response.items.length) {
-        src = `https://www.youtube.com/embed/${response.items[0].id.videoId}`;
-      } else {
+      if (!response.items.length) {
+        Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
         e.target.classList.add('is-hidden');
-        return;
+      } else {
+        createYTIframe(response.items[0].id.videoId);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   } else {
-    src = `https://www.youtube.com/embed/${e.target.dataset.video}`;
+    createYTIframe(e.target.dataset.video);
   }
-  if (src) {
-    const markup = `<iframe src="${src}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
-  encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
-</iframe>`;
-    const instance = basicLightbox.create(markup);
-    instance.show();
-  } else {
-    e.target.classList.add('is-hidden');
-  }
+}
+
+function createYTIframe(videoKey) {
+  const markup = `<iframe src="https://www.youtube.com/embed/${videoKey}" data-index="iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write;
+    encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+    </iframe>`;
+  const instance = basicLightbox.create(markup);
+  instance.show();
 }
 
 function lybBtnClick(e) {
   toggleButtonsType(e.target);
-  // showLybrary(e.target.dataset.type);
 }
 
 function toggleButtonsType(btn) {
