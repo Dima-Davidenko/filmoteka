@@ -12,12 +12,9 @@ function setActionByYTStatus(trailerBtn) {
   }
 }
 
-async function getYTSearch() {
+async function getYTSearch(query) {
   try {
-    const movieInfo = storageAPI.load('modalInfo');
-    const response = await fetchAPI.instanceYT.fetchYTSearch(
-      `movie ${movieInfo.original_title} ${movieInfo.year} official trailer`
-    );
+    const response = await fetchAPI.instanceYT.fetchYTSearch(query);
     return response;
   } catch (error) {
     firebaseAPI.instance.setYouTubeStatus(Date.now(), false);

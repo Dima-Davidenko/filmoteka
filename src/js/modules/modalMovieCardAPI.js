@@ -86,8 +86,11 @@ async function showModalMovieCard(movieInfo) {
 }
 
 async function trailerBtnClickAction(e) {
+  const YTStatus = storageAPI.load('YTStatus');
+  const movieInfo = storageAPI.load('modalInfo');
   if (e.target.dataset.action === 'find') {
-    const response = await youTubeAPI.getYTSearch();
+    const query = `movie ${movieInfo.original_title} ${movieInfo.year} official trailer`;
+    const response = await youTubeAPI.getYTSearch(query);
     if (!response || !response.items.length) {
       Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
       e.target.classList.add('is-hidden');
@@ -95,7 +98,18 @@ async function trailerBtnClickAction(e) {
       youTubeAPI.createYTIframe(response.items[0].id.videoId);
     }
   } else {
-    youTubeAPI.createYTIframe(e.target.dataset.video);
+    if (e.ctrlKey && YTStatus.status) {
+      const query = `фільм ${movieInfo.title} ${movieInfo.year} український трейлер`;
+      const response = await youTubeAPI.getYTSearch(query);
+      if (!response || !response.items.length) {
+        Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
+        e.target.classList.add('is-hidden');
+      } else {
+        youTubeAPI.createYTIframe(response.items[0].id.videoId);
+      }
+    } else {
+      youTubeAPI.createYTIframe(e.target.dataset.video);
+    }
   }
 }
 
