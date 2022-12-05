@@ -133,6 +133,20 @@ class firebaseAPI {
         } else {
           storageAPI.save('YTStatus', YTStatus);
         }
+        const watchSomething = await this.getWatchSomethingMovies();
+        console.log(watchSomething);
+        const savedWSDate = new Date(watchSomething.timeStamp);
+        if (
+          savedWSDate.getUTCDate() > dateNow.getUTCDate() ||
+          savedWSDate.getUTCMonth() > dateNow.getUTCMonth() ||
+          savedWSDate.getUTCFullYear() > dateNow.getUTCFullYear()
+        ) {
+          const movies = await fetchAPI.instance.fetchSomethingToWatch();
+          this.saveWatchSomethingMovies(Date.now(), movies);
+          storageAPI.save('watchSomeThingMovies', movies);
+        } else {
+          storageAPI.save('watchSomeThingMovies', watchSomething.movies);
+        }
         uiAPI.hideRegistrationInfo();
         this.userId = user.uid;
         refsMdl.signOutBtnEl.classList.remove('is-hidden');
@@ -244,6 +258,16 @@ class firebaseAPI {
     } catch (error) {
       console.log(`Fail to remove from DB ---> ${error}`);
     }
+  }
+  async saveWatchSomethingMovies(timeStamp, movies) {
+    set(ref(this.database, 'watchSomething'), {
+      movies,
+      timeStamp,
+    });
+  }
+  async getWatchSomethingMovies() {
+    const snapshot = await get(child(this.dbRef, `watchSomething`));
+    return snapshot.val();
   }
   async setYouTubeStatus(timeStamp, status) {
     set(ref(this.database, 'appSettings/YTstatus'), {

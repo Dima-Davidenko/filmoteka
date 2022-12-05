@@ -7,6 +7,7 @@ import firebaseAPI from './firebaseAPI';
 import fetchAPI from './fetchAPI';
 import { Notify } from 'notiflix';
 import youTubeAPI from './youTubeAPI';
+import { filmServerList } from '../utils/filmServers';
 
 // import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import modalMovieCardTpl from '../../templates/modal.hbs';
@@ -37,6 +38,7 @@ async function showModalMovieCard(movieInfo) {
   const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
   const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
+  const gSearchBtn = refsMdl.modalMovieCardEl.querySelector('.js-gSearch-btn');
   if (!movieInfo.video) {
     youTubeAPI.setActionByYTStatus(trailerBtn);
   } else {
@@ -67,6 +69,7 @@ async function showModalMovieCard(movieInfo) {
         queueBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
 
         trailerBtn.addEventListener('click', trailerBtnClickAction);
+        gSearchBtn.addEventListener('click', gSearchBtnClickAction);
         watchBtn.addEventListener('click', lybBtnClick);
         queueBtn.addEventListener('click', lybBtnClick);
       },
@@ -85,9 +88,43 @@ async function showModalMovieCard(movieInfo) {
   }
 }
 
+async function gSearchBtnClickAction(e) {
+  const movieInfo = storageAPI.load('modalInfo');
+  const query = `фильм ${movieInfo.ru_title} ${movieInfo.year} смотреть онлайн бесплатно`;
+  const response = await fetchAPI.instanceGoogle.fetchGoogleSearch(query);
+  if (response?.items) {
+    const filtered = response.items.filter(movieInfo =>
+      filmServerList.includes(movieInfo.displayLink)
+    );
+    if (!filtered.length) {
+      Notify.failure('Нажаль нічого не вдалося знайти...');
+      e.target.classList.add('is-hidden');
+      return;
+    }
+    const markup = filtered
+      .map(
+        movieInfo =>
+          `<li><a href="${movieInfo.link}" target="blank">${movieInfo.displayLink}</a></li>`
+      )
+      .join('');
+    const ul = document.createElement('UL');
+    ul.classList.add('js-gSearchList');
+    ul.innerHTML = markup;
+    refsMdl.modaGSearchEl.appendChild(ul);
+    const instance = basicLightbox.create(refsMdl.modaGSearchEl);
+    instance.show();
+  } else {
+    Notify('Нажаль нічого не вдалося знайти...');
+    e.target.classList.add('is-hidden');
+  }
+}
+
 async function trailerBtnClickAction(e) {
+  const YTStatus = storageAPI.load('YTStatus');
+  const movieInfo = storageAPI.load('modalInfo');
   if (e.target.dataset.action === 'find') {
-    const response = await youTubeAPI.getYTSearch();
+    const query = `movie ${movieInfo.original_title} ${movieInfo.year} official trailer`;
+    const response = await youTubeAPI.getYTSearch(query);
     if (!response || !response.items.length) {
       Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
       e.target.classList.add('is-hidden');
@@ -95,7 +132,18 @@ async function trailerBtnClickAction(e) {
       youTubeAPI.createYTIframe(response.items[0].id.videoId);
     }
   } else {
-    youTubeAPI.createYTIframe(e.target.dataset.video);
+    if (e.ctrlKey && YTStatus.status) {
+      const query = `фільм ${movieInfo.title} ${movieInfo.year} український трейлер`;
+      const response = await youTubeAPI.getYTSearch(query);
+      if (!response || !response.items.length) {
+        Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
+        e.target.classList.add('is-hidden');
+      } else {
+        youTubeAPI.createYTIframe(response.items[0].id.videoId);
+      }
+    } else {
+      youTubeAPI.createYTIframe(e.target.dataset.video);
+    }
   }
 }
 

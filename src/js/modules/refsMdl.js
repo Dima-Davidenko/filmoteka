@@ -10,6 +10,8 @@ const addToWatchedBtnEl = document.querySelector('.js-addToWatched-btn');
 const queuedBtnEl = document.querySelector('.js-queued-btn');
 const addToQueuedBtnEl = document.querySelector('.js-addToQueued-btn');
 const modalMovieCardEl = document.querySelector('.js-modalMovieCard');
+const modaGSearchEl = document.querySelector('.js-gSearch-container');
+const gSearchListEl = document.querySelector('.js-gSearchList');
 const galleryEl = document.querySelector('.js-gallery');
 const teamDescrEl = document.querySelector('.js-teamDescr');
 const signInBtnEl = document.querySelector('.js-signIn-btn');
@@ -26,6 +28,7 @@ const filtersResetBtnEl = document.querySelector('.js-filtersReset-btn');
 const themeSwitchFormEl = document.querySelector('.js-theme-form');
 const themeNameEl = document.querySelector('.js-theme-name');
 const upBtnEl = document.querySelector('.up-button');
+const watchSomethingBtnEl = document.querySelector('.js-watchSomething-btn');
 
 export default {
   body,
@@ -56,4 +59,7 @@ export default {
   themeSwitchFormEl,
   themeNameEl,
   upBtnEl,
+  gSearchListEl,
+  modaGSearchEl,
+  watchSomethingBtnEl,
 };
