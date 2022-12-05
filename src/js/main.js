@@ -11,6 +11,7 @@ import footerModal from './modules/footerModal';
 import fetchAPI from './modules/fetchAPI';
 import firebaseAPI from './modules/firebaseAPI';
 import respDataProc from './modules/responseDataProcessing';
+import { async } from '@firebase/util';
 
 export const currentAppState = {
   galleryState: 'popular',
@@ -18,6 +19,7 @@ export const currentAppState = {
   popular: { currentPage: 1 },
   search: { currentPage: 1 },
   filtered: { currentPage: 1 },
+  somethingToWatch: { currentPage: 1, totalPages: null },
 };
 
 let pagination = null;
@@ -245,8 +247,77 @@ function handleUpBtnClick() {
   });
 }
 
+const throttledHandlerDocumentScroll = throttle(handleDocumentScroll, 300);
+
+function handleDocumentScroll() {
+  if (
+    document.documentElement.scrollHeight -
+      document.documentElement.clientHeight -
+      document.documentElement.scrollTop <
+    500
+  ) {
+    showMoreGallery();
+  }
+}
+
+function showMoreGallery() {
+  const moviesToShow = getMoviesToShow();
+  currentAppState.somethingToWatch.currentPage += 1;
+  const processedInfo = respDataProc.prepareMoviesInfo(moviesToShow);
+  uiAPI.addToGallery(processedInfo);
+}
+
+function handleWatchSomethingBtnClick() {
+  refsMdl.paginationEl.classList.add('is-hidden');
+  function shuffle(array) {
+    let currentIndex = array.length;
+    let randomIndex;
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
+  const watchSomethingInfo = storageAPI.load('watchSomeThingMovies');
+  const watched = storageAPI.load('watched');
+  const watchedIDs = watched.map(movieInfo => movieInfo.id);
+  watchedIDs.forEach(id => {
+    if (watchSomethingInfo[id]) delete watchSomethingInfo[id];
+  });
+  const arrRandomizedIDs = shuffle(Object.keys(watchSomethingInfo));
+  const arrRandomizedMovies = arrRandomizedIDs.map(id => watchSomethingInfo[id]);
+  const filteredMovies = arrRandomizedMovies.filter(movieInfo => movieInfo.vote_count >= 300);
+  currentAppState.somethingToWatch.movies = filteredMovies;
+  currentAppState.somethingToWatch.totalPages = Math.ceil(filteredMovies.length / 20);
+  const moviesToShow = getMoviesToShow();
+  currentAppState.somethingToWatch.currentPage += 1;
+  const processedInfo = respDataProc.prepareMoviesInfo(moviesToShow);
+  uiAPI.renderGallery(processedInfo);
+  document.addEventListener('scroll', throttledHandlerDocumentScroll);
+}
+
+function getMoviesToShow() {
+  if (
+    currentAppState.somethingToWatch.currentPage === currentAppState.somethingToWatch.totalPages
+  ) {
+    return currentAppState.somethingToWatch.movies.slice(
+      currentAppState.somethingToWatch.currentPage * 20 - 20,
+      currentAppState.somethingToWatch.movies.length
+    );
+  }
+  return currentAppState.somethingToWatch.movies.slice(
+    currentAppState.somethingToWatch.currentPage * 20 - 20,
+    currentAppState.somethingToWatch.currentPage * 20
+  );
+}
+
 refsMdl.logoEl.addEventListener('click', handleLogoBtnClick);
 refsMdl.homeBtnEl.addEventListener('click', handleHomeBtnClick);
+refsMdl.watchSomethingBtnEl.addEventListener('click', handleWatchSomethingBtnClick);
 
 refsMdl.searchFormEl.addEventListener('submit', handleFormSubmit);
 
@@ -289,5 +360,4 @@ currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 showPopular();
 upButton();
 storageAPI.save('filters', []);
-
 footerModal();

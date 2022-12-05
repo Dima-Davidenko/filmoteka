@@ -13,6 +13,12 @@ export const uiAPI = {
     galleryContainer.innerHTML = galleryElement(moviesListInfo);
     storageAPI.save('gallery', moviesListInfo);
   },
+  addToGallery: moviesListInfo => {
+    console.log('Info for gallery rendering', moviesListInfo);
+
+    galleryContainer.insertAdjacentHTML('beforeend', galleryElement(moviesListInfo));
+    storageAPI.save('gallery', moviesListInfo);
+  },
   showLoadingInfo: () => {
     refsMdl.loadingInfoEl.classList.remove('is-hidden');
   },

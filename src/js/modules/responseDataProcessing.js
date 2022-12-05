@@ -81,6 +81,7 @@ const prepareModalCardInfo = movieInfo => {
   } else if (movieInfo.en?.poster_path) {
     posterUrl = `https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`;
   }
+  const ru_title = movieInfo.ru?.title;
   let video = null;
   if (movieInfo?.videos?.length) {
     video = movieInfo.videos[movieInfo.videos.length - 1].key;
@@ -99,6 +100,7 @@ const prepareModalCardInfo = movieInfo => {
     posterUrl,
     noImage,
     video,
+    ru_title,
   };
 };
 

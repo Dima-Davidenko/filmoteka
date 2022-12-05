@@ -7,6 +7,7 @@ import firebaseAPI from './firebaseAPI';
 import fetchAPI from './fetchAPI';
 import { Notify } from 'notiflix';
 import youTubeAPI from './youTubeAPI';
+import { filmServerList } from '../utils/filmServers';
 
 // import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
 import modalMovieCardTpl from '../../templates/modal.hbs';
@@ -37,6 +38,7 @@ async function showModalMovieCard(movieInfo) {
   const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
   const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
+  const gSearchBtn = refsMdl.modalMovieCardEl.querySelector('.js-gSearch-btn');
   if (!movieInfo.video) {
     youTubeAPI.setActionByYTStatus(trailerBtn);
   } else {
@@ -67,6 +69,7 @@ async function showModalMovieCard(movieInfo) {
         queueBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
 
         trailerBtn.addEventListener('click', trailerBtnClickAction);
+        gSearchBtn.addEventListener('click', gSearchBtnClickAction);
         watchBtn.addEventListener('click', lybBtnClick);
         queueBtn.addEventListener('click', lybBtnClick);
       },
@@ -82,6 +85,37 @@ async function showModalMovieCard(movieInfo) {
     });
     closeBtn.addEventListener('click', instance.close);
     instance.show();
+  }
+}
+
+async function gSearchBtnClickAction(e) {
+  const movieInfo = storageAPI.load('modalInfo');
+  const query = `фильм ${movieInfo.ru_title} ${movieInfo.year} смотреть онлайн бесплатно`;
+  const response = await fetchAPI.instanceGoogle.fetchGoogleSearch(query);
+  if (response?.items) {
+    const filtered = response.items.filter(movieInfo =>
+      filmServerList.includes(movieInfo.displayLink)
+    );
+    if (!filtered.length) {
+      Notify.failure('Нажаль нічого не вдалося знайти...');
+      e.target.classList.add('is-hidden');
+      return;
+    }
+    const markup = filtered
+      .map(
+        movieInfo =>
+          `<li><a href="${movieInfo.link}" target="blank">${movieInfo.displayLink}</a></li>`
+      )
+      .join('');
+    const ul = document.createElement('UL');
+    ul.classList.add('js-gSearchList');
+    ul.innerHTML = markup;
+    refsMdl.modaGSearchEl.appendChild(ul);
+    const instance = basicLightbox.create(refsMdl.modaGSearchEl);
+    instance.show();
+  } else {
+    Notify('Нажаль нічого не вдалося знайти...');
+    e.target.classList.add('is-hidden');
   }
 }
 

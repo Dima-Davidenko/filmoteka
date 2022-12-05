@@ -16,6 +16,7 @@ jobs:
           touch .env
           echo FIREBASE_CONFIG = ${{secrets.FIREBASE_CONFIG}}  >> .env
           echo TMDB_KEY = ${{secrets.TMDB_KEY}}  >> .env
+          echo GOOGLE_SEARCH_KEY = ${{secrets.GOOGLE_SEARCH_KEY}}  >> .env
 
       - name: Install and Build 🔧
         run: |
