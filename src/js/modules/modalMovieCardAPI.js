@@ -109,7 +109,8 @@ async function gSearchBtnClickAction(e) {
       .join('');
     const ul = document.createElement('UL');
     ul.classList.add('js-gSearchList');
-    ul.innerHTML = markup;
+    ul.innerHTML = '<h4>На цих ресурсах ви зможете подивитися цей фільм:</h4>';
+    ul.insertAdjacentHTML('beforeend', markup);
     refsMdl.modaGSearchEl.appendChild(ul);
     const instance = basicLightbox.create(refsMdl.modaGSearchEl);
     instance.show();

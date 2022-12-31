@@ -27,6 +27,7 @@ const filtersFormEl = document.querySelector('.js-filters-form');
 const filtersResetBtnEl = document.querySelector('.js-filtersReset-btn');
 const themeSwitchFormEl = document.querySelector('.js-theme-form');
 const themeNameEl = document.querySelector('.js-theme-name');
+const themeInput = themeSwitchFormEl.querySelector('input');
 const upBtnEl = document.querySelector('.up-button');
 const watchSomethingBtnEl = document.querySelector('.js-watchSomething-btn');
 
@@ -58,6 +59,7 @@ export default {
   filtersResetBtnEl,
   themeSwitchFormEl,
   themeNameEl,
+  themeInput,
   upBtnEl,
   gSearchListEl,
   modaGSearchEl,

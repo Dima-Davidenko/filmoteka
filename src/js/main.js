@@ -102,6 +102,7 @@ function handleLogoBtnClick() {
 }
 
 const handleHomeBtnClick = async e => {
+  removeScrollEventListener();
   refsMdl.header.classList.remove('header--lybrary');
   setActiveButton(e.target);
   refsMdl.searchInputEl.value = '';
@@ -116,6 +117,7 @@ const handleHomeBtnClick = async e => {
 
 const showSearch = async () => {
   currentAppState.galleryState = 'search';
+  removeScrollEventListener();
   try {
     const response = await fetchAPI.instance.fetchSearch(
       currentAppState.searchQuery,
@@ -145,6 +147,7 @@ const handleFormSubmit = async event => {
 };
 
 const handleLybraryBtnClick = async e => {
+  removeScrollEventListener();
   refsMdl.paginationEl.classList.add('is-hidden');
   refsMdl.header.classList.add('header--lybrary');
   if (!firebaseAPI.instance.userId) uiAPI.showRegistrationInfo();
@@ -201,6 +204,17 @@ async function handleFilterFormChange(e) {
   for (let i = 0; i < form.elements.length; i += 1) {
     if (form[i].name && form[i].value) {
       filters.push({ [form[i].name]: form[i].value });
+    }
+  }
+  const periodFilter = filters.filter(filter => filter['primary_release_date.gte']);
+  if (periodFilter.length) {
+    const year = +periodFilter[0]['primary_release_date.gte'].slice(0, 4);
+    if (year === 1949) {
+      filters.push({ ['primary_release_date.lte']: periodFilter[0]['primary_release_date.gte'] });
+      const index = filters.findIndex(filter => filter['primary_release_date.gte']);
+      filters.splice(index, 1);
+    } else {
+      filters.push({ ['primary_release_date.lte']: year + 10 + '-01-01' });
     }
   }
   storageAPI.save('filters', filters);
@@ -268,6 +282,7 @@ function showMoreGallery() {
 }
 
 function handleWatchSomethingBtnClick() {
+  refsMdl.filtersFormEl.classList.add('is-hidden');
   refsMdl.paginationEl.classList.add('is-hidden');
   function shuffle(array) {
     let currentIndex = array.length;
@@ -315,6 +330,10 @@ function getMoviesToShow() {
   );
 }
 
+function removeScrollEventListener() {
+  document.removeEventListener('scroll', throttledHandlerDocumentScroll);
+}
+
 refsMdl.logoEl.addEventListener('click', handleLogoBtnClick);
 refsMdl.homeBtnEl.addEventListener('click', handleHomeBtnClick);
 refsMdl.watchSomethingBtnEl.addEventListener('click', handleWatchSomethingBtnClick);
@@ -334,9 +353,11 @@ refsMdl.filtersResetBtnEl.addEventListener('click', showPopular);
 refsMdl.themeSwitchFormEl.addEventListener('change', e => {
   const isDark = e.target.checked;
   if (isDark) {
+    storageAPI.save('darkTheme', true);
     refsMdl.themeNameEl.textContent = 'Темна тема';
     refsMdl.body.classList.add('dark-theme');
   } else {
+    storageAPI.save('darkTheme', false);
     refsMdl.themeNameEl.textContent = 'Світла тема';
     refsMdl.body.classList.remove('dark-theme');
   }
@@ -357,6 +378,11 @@ function upButton() {
 
 currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 // currentAppState.popular.currentPage = 414;
+if (storageAPI.load('darkTheme')) {
+  refsMdl.themeNameEl.textContent = 'Темна тема';
+  refsMdl.body.classList.add('dark-theme');
+  refsMdl.themeInput.checked = true;
+}
 showPopular();
 upButton();
 storageAPI.save('filters', []);

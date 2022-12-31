@@ -16,6 +16,7 @@ import refsMdl from './refsMdl';
 import storageAPI from './storageAPI';
 import modalMovieCardAPI from './modalMovieCardAPI';
 import { uiAPI } from './uiAPI';
+import fetchAPI from './fetchAPI';
 
 class firebaseAPI {
   constructor(signInBtnEl, logOutBtnEl) {
@@ -124,9 +125,9 @@ class firebaseAPI {
         const dateNow = new Date();
         const savedDate = new Date(YTStatus.timeStamp);
         if (
-          (YTStatus.status === false && savedDate.getUTCDate() > dateNow.getUTCDate()) ||
-          savedDate.getUTCMonth() > dateNow.getUTCMonth() ||
-          savedDate.getUTCFullYear() > dateNow.getUTCFullYear()
+          (YTStatus.status === false && savedDate.getUTCDate() < dateNow.getUTCDate()) ||
+          savedDate.getUTCMonth() < dateNow.getUTCMonth() ||
+          savedDate.getUTCFullYear() < dateNow.getUTCFullYear()
         ) {
           this.setYouTubeStatus(Date.now(), true);
           storageAPI.save('YTStatus', { status: true, timeStamp: dateNow });
@@ -136,10 +137,14 @@ class firebaseAPI {
         const watchSomething = await this.getWatchSomethingMovies();
         console.log(watchSomething);
         const savedWSDate = new Date(watchSomething.timeStamp);
+        const timeObj = {
+          date: savedWSDate.getUTCDate(),
+          dateNow: dateNow.getUTCDate(),
+        };
         if (
-          savedWSDate.getUTCDate() > dateNow.getUTCDate() ||
-          savedWSDate.getUTCMonth() > dateNow.getUTCMonth() ||
-          savedWSDate.getUTCFullYear() > dateNow.getUTCFullYear()
+          savedWSDate.getUTCDate() < dateNow.getUTCDate() ||
+          savedWSDate.getUTCMonth() < dateNow.getUTCMonth() ||
+          savedWSDate.getUTCFullYear() < dateNow.getUTCFullYear()
         ) {
           const movies = await fetchAPI.instance.fetchSomethingToWatch();
           this.saveWatchSomethingMovies(Date.now(), movies);
@@ -250,6 +255,7 @@ class firebaseAPI {
       posterUrl: movieInfo.posterUrl || null,
       genres: movieInfo.genres || null,
       year: movieInfo.year || null,
+      overview: movieInfo.overview || null,
     });
   }
   async removeFromLyb(id, type) {

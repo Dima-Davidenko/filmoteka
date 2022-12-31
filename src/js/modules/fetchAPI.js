@@ -14,7 +14,7 @@ class fetchTMDBAPI {
       },
     });
     this.filterParams = {
-      sort_by: 'vote_average.desc',
+      sort_by: 'vote_count.desc',
       ['vote_count.gte']: 10,
     };
   }
@@ -344,13 +344,13 @@ class fetchTMDBAPI {
   async fetchFiltered(page = 1) {
     uiAPI.showLoadingInfo();
     const filters = storageAPI.load('filters');
+    const newFilters = {};
     filters.forEach(filter => {
       const [filterName, filterValue] = Object.entries(filter)[0];
-      this.filterParams[filterName] = filterValue;
+      newFilters[filterName] = filterValue;
     });
-    console.log(this.filterParams);
     const { data } = await this.axiosTMDB.get('discover/movie', {
-      params: { page, language: 'uk', ...this.filterParams },
+      params: { page, language: 'uk', ...this.filterParams, ...newFilters },
     });
     uiAPI.hideLoadingInfo();
     return data;
