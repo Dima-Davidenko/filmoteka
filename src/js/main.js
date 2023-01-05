@@ -148,6 +148,7 @@ const handleFormSubmit = async event => {
 
 const handleLybraryBtnClick = async e => {
   removeScrollEventListener();
+  // console.log()
   refsMdl.paginationEl.classList.add('is-hidden');
   refsMdl.header.classList.add('header--lybrary');
   if (!firebaseAPI.instance.userId) uiAPI.showRegistrationInfo();
