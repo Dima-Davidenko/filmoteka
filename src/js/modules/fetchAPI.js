@@ -304,7 +304,7 @@ class fetchTMDBAPI {
       }
     });
     uiAPI.hideLoadingInfo();
-    console.log(data);
+    // console.log(data);
     return data.uk;
   }
   async fetchId(movie_id) {

@@ -1,17 +1,15 @@
-import { Notify } from 'notiflix';
 import throttle from 'lodash.throttle';
+import { Notify } from 'notiflix';
 import Pagination from 'tui-pagination';
-import refsMdl from './modules/refsMdl';
-import storageAPI from './modules/storageAPI';
-import { uiAPI } from './modules/uiAPI';
-import storageAPI from './modules/storageAPI';
 import galleryElementTpl from '../templates/galleryElement.hbs';
-import modalMovieCardAPI from './modules/modalMovieCardAPI';
-import footerModal from './modules/footerModal';
 import fetchAPI from './modules/fetchAPI';
 import firebaseAPI from './modules/firebaseAPI';
+import footerModal from './modules/footerModal';
+import modalMovieCardAPI from './modules/modalMovieCardAPI';
+import refsMdl from './modules/refsMdl';
 import respDataProc from './modules/responseDataProcessing';
-import { async } from '@firebase/util';
+import storageAPI from './modules/storageAPI';
+import { uiAPI } from './modules/uiAPI';
 
 export const currentAppState = {
   galleryState: 'popular',
@@ -20,6 +18,7 @@ export const currentAppState = {
   search: { currentPage: 1 },
   filtered: { currentPage: 1 },
   somethingToWatch: { currentPage: 1, totalPages: null },
+  isAuth: false,
 };
 
 let pagination = null;
@@ -123,13 +122,13 @@ const showSearch = async () => {
       currentAppState.searchQuery,
       currentAppState.search.currentPage
     );
-    console.log(response);
+    // console.log(response);
     if (!response.results.length) {
       Notify.failure('Немає таких фільмів :)');
       return;
     }
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
-    console.log(processedInfo);
+    // console.log(processedInfo);
     uiAPI.renderGallery(processedInfo);
     showPagination(response.total_results, currentAppState.popular.currentPage);
   } catch (error) {
@@ -192,7 +191,7 @@ const handleGalleryClick = async e => {
     storageAPI.save('modalInfo', processedInfo);
     modalMovieCardAPI.showModalMovieCard(processedInfo);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     Notify.failure(messageFailure);
   }
 };
@@ -283,6 +282,12 @@ function showMoreGallery() {
 }
 
 function handleWatchSomethingBtnClick() {
+  const watchSomethingInfo = storageAPI.load('watchSomeThingMovies');
+
+  if (!watchSomethingInfo) {
+    Notify.failure('Для прегляду рекомендацій будь ласка зареєструйтеся в системі');
+    return;
+  }
   refsMdl.filtersFormEl.classList.add('is-hidden');
   refsMdl.paginationEl.classList.add('is-hidden');
   function shuffle(array) {
@@ -298,7 +303,6 @@ function handleWatchSomethingBtnClick() {
     }
     return array;
   }
-  const watchSomethingInfo = storageAPI.load('watchSomeThingMovies');
   const watched = storageAPI.load('watched');
   const watchedIDs = watched.map(movieInfo => movieInfo.id);
   watchedIDs.forEach(id => {
@@ -377,7 +381,7 @@ function upButton() {
   );
 }
 
-currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
+// currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 // currentAppState.popular.currentPage = 414;
 if (storageAPI.load('darkTheme')) {
   refsMdl.themeNameEl.textContent = 'Темна тема';
