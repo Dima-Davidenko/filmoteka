@@ -8,13 +8,13 @@ const galleryContainer = document.querySelector('.js-gallery');
 
 export const uiAPI = {
   renderGallery: moviesListInfo => {
-    console.log('Info for gallery rendering', moviesListInfo);
+    // console.log('Info for gallery rendering', moviesListInfo);
 
     galleryContainer.innerHTML = galleryElement(moviesListInfo);
     storageAPI.save('gallery', moviesListInfo);
   },
   addToGallery: moviesListInfo => {
-    console.log('Info for gallery rendering', moviesListInfo);
+    // console.log('Info for gallery rendering', moviesListInfo);
 
     galleryContainer.insertAdjacentHTML('beforeend', galleryElement(moviesListInfo));
     storageAPI.save('gallery', moviesListInfo);

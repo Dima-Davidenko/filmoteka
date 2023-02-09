@@ -42,7 +42,7 @@ class firebaseAPI {
       handleCodeInApp: true,
     };
     const userEmail = refsMdl.emailInputEl.value.trim();
-    console.log(userEmail);
+    // console.log(userEmail);
     sendSignInLinkToEmail(this.firebaseAuth, userEmail, actionCodeSettings)
       .then(() => {
         // The link was successfully sent. Inform the user.
@@ -52,7 +52,7 @@ class firebaseAPI {
         // ...
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         const errorCode = error.code;
         const errorMessage = error.message;
         // ...
@@ -66,7 +66,7 @@ class firebaseAPI {
       const user = signInResult.user;
       this.userId = user.uid;
       this.userStatus.textContent = `Hello, ${user.displayName}`;
-      console.log(user);
+      //console.log(user);
     } catch (error) {
       // const errorCode = error.code;
       // const errorMessage = error.message;
@@ -74,9 +74,9 @@ class firebaseAPI {
       // const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      console.log(error);
-      console.log(credential);
-      console.log('error');
+      //console.log(error);
+      //console.log(credential);
+      //console.log('error');
     }
   }
 
@@ -135,7 +135,7 @@ class firebaseAPI {
           storageAPI.save('YTStatus', YTStatus);
         }
         const watchSomething = await this.getWatchSomethingMovies();
-        console.log(watchSomething);
+        //console.log(watchSomething);
         const savedWSDate = new Date(watchSomething.timeStamp);
         const timeObj = {
           date: savedWSDate.getUTCDate(),
@@ -157,7 +157,7 @@ class firebaseAPI {
         refsMdl.signOutBtnEl.classList.remove('is-hidden');
         refsMdl.signInBtnEl.classList.add('is-hidden');
         refsMdl.userStatusEl.textContent = `Hello, ${user.displayName}`;
-        console.log('User info from monitor', user);
+        //console.log('User info from monitor', user);
         this.accessToken = user.accessToken;
         const watched = storageAPI.load('watched');
         if (watched) {
@@ -184,7 +184,7 @@ class firebaseAPI {
           } else {
             this.writeDataToStorage('watched', []);
           }
-          console.log('Data Monitor ---> Data from watched DB have changed', data);
+          //console.log('Data Monitor ---> Data from watched DB have changed', data);
           modalMovieCardAPI.showLybrary('watched');
         });
         const userLybraryQueue = ref(this.database, `users/${this.userId}/lybrary/queue/`);
@@ -198,7 +198,7 @@ class firebaseAPI {
           } else {
             this.writeDataToStorage('queue', []);
           }
-          console.log('Data Monitor ---> Data from queue DB have changed', data);
+          //console.log('Data Monitor ---> Data from queue DB have changed', data);
           modalMovieCardAPI.showLybrary('queue');
         });
         const YTStatusRef = ref(this.database, `appSettings/YTstatus`);
@@ -210,13 +210,13 @@ class firebaseAPI {
           } else {
             this.writeDataToStorage('YTStatus', { status: true, timeStamp: Date.now() });
           }
-          console.log('Data Monitor ---> Data from YTstatus DB have changed', data);
+          //console.log('Data Monitor ---> Data from YTstatus DB have changed', data);
         });
       } else {
         refsMdl.signOutBtnEl.classList.add('is-hidden');
         refsMdl.signInBtnEl.classList.remove('is-hidden');
         this.userStatus.textContent = 'You are not logged in';
-        console.log(`You're not logged in.`);
+        //console.log(`You're not logged in.`);
       }
     });
   }
@@ -230,7 +230,7 @@ class firebaseAPI {
       this.userStatus.textContent = 'Logged Out';
       this.userId = null;
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
   async isInLyb(id, type) {
@@ -242,7 +242,7 @@ class firebaseAPI {
         return false;
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       return false;
     }
   }
@@ -262,7 +262,7 @@ class firebaseAPI {
     try {
       remove(ref(this.database, `users/${this.userId}/lybrary/${type}/${id}`));
     } catch (error) {
-      console.log(`Fail to remove from DB ---> ${error}`);
+      // console.log(`Fail to remove from DB ---> ${error}`);
     }
   }
   async saveWatchSomethingMovies(timeStamp, movies) {

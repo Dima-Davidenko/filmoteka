@@ -1,18 +1,16 @@
 import * as basicLightbox from 'basiclightbox';
-import lybraryAPI from './lybraryAPI';
-import storageAPI from './storageAPI';
-import refsMdl from './refsMdl';
-import { currentAppState } from '../main';
-import firebaseAPI from './firebaseAPI';
-import fetchAPI from './fetchAPI';
 import { Notify } from 'notiflix';
-import youTubeAPI from './youTubeAPI';
+import { currentAppState } from '../main';
 import { filmServerList } from '../utils/filmServers';
+import fetchAPI from './fetchAPI';
+import firebaseAPI from './firebaseAPI';
+import lybraryAPI from './lybraryAPI';
+import refsMdl from './refsMdl';
+import storageAPI from './storageAPI';
+import youTubeAPI from './youTubeAPI';
 
-// import modalMovieCardTpl from '../../templates/modalMovieCard.hbs';
-import modalMovieCardTpl from '../../templates/modal.hbs';
 import galleryElementTpl from '../../templates/galleryElement.hbs';
-import { async } from '@firebase/util';
+import modalMovieCardTpl from '../../templates/modal.hbs';
 
 async function showModalMovieCard(movieInfo) {
   let isWatched;
@@ -23,7 +21,7 @@ async function showModalMovieCard(movieInfo) {
       isWatched = await firebaseAPI.instance.isInLyb(movieInfo.id, 'watched');
       isQueued = await firebaseAPI.instance.isInLyb(movieInfo.id, 'queue');
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   } else {
     const watched = storageAPI.load('watched');
@@ -38,6 +36,7 @@ async function showModalMovieCard(movieInfo) {
   const queueBtn = refsMdl.modalMovieCardEl.querySelector('.js-queue-btn');
   const closeBtn = refsMdl.modalMovieCardEl.querySelector('.btn-close');
   const trailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-trailer-btn');
+  const findTrailerBtn = refsMdl.modalMovieCardEl.querySelector('.js-find-trailer-btn');
   const gSearchBtn = refsMdl.modalMovieCardEl.querySelector('.js-gSearch-btn');
   if (!movieInfo.video) {
     youTubeAPI.setActionByYTStatus(trailerBtn);
@@ -69,6 +68,7 @@ async function showModalMovieCard(movieInfo) {
         queueBtn.addEventListener('click', lybraryAPI.lybBtnClickAction);
 
         trailerBtn.addEventListener('click', trailerBtnClickAction);
+        findTrailerBtn.addEventListener('click', findTrailerBtnClickAction);
         gSearchBtn.addEventListener('click', gSearchBtnClickAction);
         watchBtn.addEventListener('click', lybBtnClick);
         queueBtn.addEventListener('click', lybBtnClick);
@@ -133,18 +133,18 @@ async function trailerBtnClickAction(e) {
       youTubeAPI.createYTIframe(response.items[0].id.videoId);
     }
   } else {
-    if (e.ctrlKey && YTStatus.status) {
-      const query = `фільм ${movieInfo.title} ${movieInfo.year} український трейлер`;
-      const response = await youTubeAPI.getYTSearch(query);
-      if (!response || !response.items.length) {
-        Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
-        e.target.classList.add('is-hidden');
-      } else {
-        youTubeAPI.createYTIframe(response.items[0].id.videoId);
-      }
-    } else {
-      youTubeAPI.createYTIframe(e.target.dataset.video);
-    }
+    youTubeAPI.createYTIframe(e.target.dataset.video);
+  }
+}
+async function findTrailerBtnClickAction(e) {
+  const movieInfo = storageAPI.load('modalInfo');
+  const query = `фільм ${movieInfo.title} ${movieInfo.year} український трейлер`;
+  const response = await youTubeAPI.getYTSearch(query);
+  if (!response || !response.items.length) {
+    Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
+    e.target.classList.add('is-hidden');
+  } else {
+    youTubeAPI.createYTIframe(response.items[0].id.videoId);
   }
 }
 
@@ -155,9 +155,14 @@ function lybBtnClick(e) {
 function toggleButtonsType(btn) {
   const arr = btn.textContent.split(' ');
   arr.splice(1, 1);
-  arr[0] = arr[0] === 'Add' ? 'Remove from' : 'Add to';
+  if (firebaseAPI.instance.userId) {
+    arr[0] = arr[0] === 'Add' ? 'Remove from' : 'Add to';
+    btn.dataset.action = btn.dataset.action === 'add' ? 'remove' : 'add';
+  } else {
+    arr[0] = 'Remove from';
+    btn.dataset.action = '';
+  }
   btn.textContent = arr.join(' ');
-  btn.dataset.action = btn.dataset.action === 'add' ? 'remove' : 'add';
 }
 
 function showLybrary(type) {
