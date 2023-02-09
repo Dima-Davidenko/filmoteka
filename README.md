@@ -85,3 +85,36 @@
 </table>
 <!-- readme: contributors,ImgBotApp/- -end -->
 
+## Project Features
+
+- User registration through Firebase Authentication.
+- Saving user's library localy and remotely to Firebase Realtime Database.
+- User library data stored remotely is automatically synced across devices.
+- All information about movies is received via REST API from TMDB server.
+- Implemented movies's search.
+- Implemented movies's filters.
+- Implemented trailer search on YouTube.
+- Implemented search for links to view on Google.
+- Implemented light and dark color schemes.
+- Implemented pagination and "infinite scroll".
+- Implemented Up Button.
+
+
+## Project description
+
+The main goal of our app is to create your own library of watched movies and movies you want to watch. On the main page you are offered current popular films. Search results are displayed in a "pagination" view.
+
+You can read information about a movie by hovering your mouse over it.
+
+By clicking on the movie poster, you get access to additional features:
+- Add to Watched: Adds the movie to the Watch Queue in the library. You can add movie to this library even without registration.
+- Remove from Watched: Removes the movie from the Queue to watch in the library. Function works only when user is registered. This is done to correctly synchronize the data of the local and remote databases.
+- Watch the original trailer if the information about it is present in the TMDB server response
+- Find trailer on YouTube
+- Find servers where you can watch the film. The search is made on the Google platform.
+
+By clicking the "My Library" button, you get access to the films you have Watched and the films that are in the Queue for viewing.
+
+Clicking the "Watch Something" button gives you access to a random list of high rated movies. This feature is only available to registered users. Search results are implemented as "infinite scrolling".
+
+You can search for a movie by query using the "Movie Search" input form.
