@@ -17,12 +17,18 @@ class fetchTMDBAPI {
       sort_by: 'vote_count.desc',
       ['vote_count.gte']: 10,
     };
+    const browserLanguage = navigator.language;
+    if (browserLanguage) {
+      this.user_language = browserLanguage.split('-')[0];
+    } else {
+      this.user_language = 'en';
+    }
   }
   async fetchPopular(page = 1) {
     uiAPI.showLoadingInfo();
     const arrFetch = [
       this.axiosTMDB.get('trending/movie/week', {
-        params: { page, language: 'uk' },
+        params: { page, language: this.user_language },
       }),
       this.axiosTMDB.get('trending/movie/week', {
         params: { page, language: 'en' },
@@ -44,7 +50,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '28',
           },
@@ -60,7 +66,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '12',
           },
@@ -76,7 +82,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '16',
           },
@@ -92,7 +98,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '35',
           },
@@ -108,7 +114,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '80',
           },
@@ -124,7 +130,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '99',
           },
@@ -140,7 +146,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '18',
           },
@@ -156,7 +162,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '10751',
           },
@@ -172,7 +178,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '14',
           },
@@ -188,7 +194,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '36',
           },
@@ -204,7 +210,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '9648',
           },
@@ -220,7 +226,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '10749',
           },
@@ -236,7 +242,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '878',
           },
@@ -252,7 +258,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '53',
           },
@@ -268,7 +274,7 @@ class fetchTMDBAPI {
         this.axiosTMDB.get('discover/movie', {
           params: {
             page,
-            language: 'uk',
+            language: this.user_language,
             sort_by: 'vote_count.desc',
             with_genres: '10752',
           },
@@ -311,7 +317,7 @@ class fetchTMDBAPI {
     uiAPI.showLoadingInfo();
     const arrFetch = [
       this.axiosTMDB.get(`movie/${movie_id}`, {
-        params: { language: 'uk' },
+        params: { language: this.user_language },
       }),
       this.axiosTMDB.get(`movie/${movie_id}`, {
         params: { language: 'ru' },
@@ -336,7 +342,7 @@ class fetchTMDBAPI {
     uiAPI.showLoadingInfo();
 
     const { data } = await this.axiosTMDB.get('search/movie', {
-      params: { page, query, language: 'uk' },
+      params: { page, query, language: this.user_language },
     });
     uiAPI.hideLoadingInfo();
     return data;
@@ -350,7 +356,7 @@ class fetchTMDBAPI {
       newFilters[filterName] = filterValue;
     });
     const { data } = await this.axiosTMDB.get('discover/movie', {
-      params: { page, language: 'uk', ...this.filterParams, ...newFilters },
+      params: { page, language: this.user_language, ...this.filterParams, ...newFilters },
     });
     uiAPI.hideLoadingInfo();
     return data;

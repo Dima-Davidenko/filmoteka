@@ -29,7 +29,7 @@ class firebaseAPI {
     this.apiKey = this.firebaseConfig.apiKey;
     this.dbRef = ref(this.database);
     this.monitorAuthState();
-    signInBtnEl.addEventListener('click', this.signInWithRedirectFirebase.bind(this));
+    signInBtnEl.addEventListener('click', this.signInWithPopupGoogle.bind(this));
     logOutBtnEl.addEventListener('click', this.logout.bind(this));
   }
 
@@ -61,6 +61,7 @@ class firebaseAPI {
   async signInWithPopupGoogle() {
     try {
       const signInResult = await signInWithPopup(this.firebaseAuth, this.providerGoogle);
+      console.log('signInResult: ', signInResult);
       // const credential = GoogleAuthProvider.credentialFromResult(signInResult);
       // const token = credential.accessToken;
       const user = signInResult.user;

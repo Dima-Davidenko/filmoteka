@@ -90,14 +90,14 @@ async function showModalMovieCard(movieInfo) {
 
 async function gSearchBtnClickAction(e) {
   const movieInfo = storageAPI.load('modalInfo');
-  const query = `фильм ${movieInfo.ru_title} ${movieInfo.year} смотреть онлайн бесплатно`;
+  const query = `movie ${movieInfo.ru_title} ${movieInfo.year} watch online free`;
   const response = await fetchAPI.instanceGoogle.fetchGoogleSearch(query);
   if (response?.items) {
     const filtered = response.items.filter(movieInfo =>
       filmServerList.includes(movieInfo.displayLink)
     );
     if (!filtered.length) {
-      Notify.failure('Нажаль нічого не вдалося знайти...');
+      Notify.failure('Unfortunately, nothing could be found...');
       e.target.classList.add('is-hidden');
       return;
     }
@@ -109,13 +109,13 @@ async function gSearchBtnClickAction(e) {
       .join('');
     const ul = document.createElement('UL');
     ul.classList.add('js-gSearchList');
-    ul.innerHTML = '<h4>На цих ресурсах ви зможете подивитися цей фільм:</h4>';
+    ul.innerHTML = '<h4>On these resources, you can watch this movie:</h4>';
     ul.insertAdjacentHTML('beforeend', markup);
     refsMdl.modaGSearchEl.appendChild(ul);
     const instance = basicLightbox.create(refsMdl.modaGSearchEl);
     instance.show();
   } else {
-    Notify('Нажаль нічого не вдалося знайти...');
+    Notify('Unfortunately, nothing could be found...');
     e.target.classList.add('is-hidden');
   }
 }
@@ -127,7 +127,7 @@ async function trailerBtnClickAction(e) {
     const query = `movie ${movieInfo.original_title} ${movieInfo.year} official trailer`;
     const response = await youTubeAPI.getYTSearch(query);
     if (!response || !response.items.length) {
-      Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
+      Notify.failure("Unfortunately, the minions couldn't find any trailer ;(");
       e.target.classList.add('is-hidden');
     } else {
       youTubeAPI.createYTIframe(response.items[0].id.videoId);
@@ -138,10 +138,10 @@ async function trailerBtnClickAction(e) {
 }
 async function findTrailerBtnClickAction(e) {
   const movieInfo = storageAPI.load('modalInfo');
-  const query = `фільм ${movieInfo.title} ${movieInfo.year} український трейлер`;
+  const query = `${movieInfo.title} ${movieInfo.year} trailer`;
   const response = await youTubeAPI.getYTSearch(query);
   if (!response || !response.items.length) {
-    Notify.failure('Нажаль посіпакам не вдалося знайти жодного трейлера ;(');
+    Notify.failure("Unfortunately, the minions couldn't find any trailer ;(");
     e.target.classList.add('is-hidden');
   } else {
     youTubeAPI.createYTIframe(response.items[0].id.videoId);

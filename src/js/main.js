@@ -29,7 +29,7 @@ const paginationOptions = {
   centerAlign: true,
 };
 
-const messageFailure = 'Щось пішло не так, але посіпаки вже розбираються з цим...';
+const messageFailure = 'Something went wrong...';
 
 const showPagination = totalPages => {
   const currentPage = currentAppState[currentAppState.galleryState].currentPage;
@@ -124,7 +124,7 @@ const showSearch = async () => {
     );
     // console.log(response);
     if (!response.results.length) {
-      Notify.failure('Немає таких фільмів :)');
+      Notify.failure('There are no such movies.');
       return;
     }
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
@@ -223,7 +223,7 @@ async function handleFilterFormChange(e) {
     const response = await fetchAPI.instance.fetchFiltered();
     // console.log(response);
     if (!response.results.length) {
-      Notify.failure('І тут щось пішло не так, але посіпаки вже розбираються з цим :)');
+      Notify.failure('Something went wrong...');
       return;
     }
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
@@ -242,7 +242,7 @@ async function showFiltered() {
     const response = await fetchAPI.instance.fetchFiltered(currentAppState.filtered.currentPage);
     // console.log(response);
     if (!response.results.length) {
-      Notify.failure('Немає таких фільмів :)');
+      Notify.failure('There are no such movies.');
       return;
     }
     const processedInfo = respDataProc.prepareMoviesInfo(response.results);
@@ -285,7 +285,7 @@ function handleWatchSomethingBtnClick() {
   const watchSomethingInfo = storageAPI.load('watchSomeThingMovies');
 
   if (!watchSomethingInfo) {
-    Notify.failure('Для прегляду рекомендацій будь ласка зареєструйтеся в системі');
+    Notify.failure('To view recommendations, please register in the system.');
     return;
   }
   refsMdl.filtersFormEl.classList.add('is-hidden');
@@ -359,11 +359,11 @@ refsMdl.themeSwitchFormEl.addEventListener('change', e => {
   const isDark = e.target.checked;
   if (isDark) {
     storageAPI.save('darkTheme', true);
-    refsMdl.themeNameEl.textContent = 'Темна тема';
+    refsMdl.themeNameEl.textContent = 'Enable Light mode';
     refsMdl.body.classList.add('dark-theme');
   } else {
     storageAPI.save('darkTheme', false);
-    refsMdl.themeNameEl.textContent = 'Світла тема';
+    refsMdl.themeNameEl.textContent = 'Enable Dark mode';
     refsMdl.body.classList.remove('dark-theme');
   }
 });
@@ -384,7 +384,7 @@ function upButton() {
 // currentAppState.popular.currentPage = Math.ceil(Math.random() * 1000);
 // currentAppState.popular.currentPage = 414;
 if (storageAPI.load('darkTheme')) {
-  refsMdl.themeNameEl.textContent = 'Темна тема';
+  refsMdl.themeNameEl.textContent = 'Enable Light mode';
   refsMdl.body.classList.add('dark-theme');
   refsMdl.themeInput.checked = true;
 }
